@@ -1,4 +1,4 @@
-import com.cansnifferfx.models.fxml.models.Calculate;
+import com.cansnifferfx.models.Calculate;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
