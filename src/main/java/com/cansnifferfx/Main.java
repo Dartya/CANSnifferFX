@@ -23,10 +23,10 @@ public class Main extends Application {
 
     private void createGUI() {
         currentRoot = loadFXML(); //возвращает сконфигурированный Node (Parent)
-        Scene scene = new Scene(currentRoot, 650, 500);
+        Scene scene = new Scene(currentRoot, 700, 700);
         primaryStage.setScene(scene);
-        primaryStage.setMinHeight(500);
-        primaryStage.setMinWidth(610);
+        primaryStage.setMinHeight(700);
+        primaryStage.setMinWidth(700);
         primaryStage.show();
     }
 
