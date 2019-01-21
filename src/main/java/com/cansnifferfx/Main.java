@@ -12,7 +12,7 @@ import java.io.IOException;
 public class Main extends Application {
     private static final String FXML_MAIN = "/fxml/sample.fxml";
     private Stage primaryStage;             //сцена главного окна
-    private SampleController mainController;  //контроллер сцены главного окна
+    private SampleController mainController;//контроллер сцены главного окна
     private FXMLLoader fxmlLoader;          //загрузчик файлов FXML
     private GridPane currentRoot;           //коренной Node (Parent)
 
