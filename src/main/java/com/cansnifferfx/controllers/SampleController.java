@@ -5,8 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import jssc.*;
-
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -194,7 +192,15 @@ public class SampleController {
 
     private static class PortReader implements SerialPortEventListener {
         public void serialEvent(SerialPortEvent event) {
-            if(event.isRXCHAR() && event.getEventValue() == 8) { // где 8 - количество полученных байт - для
+            if(event.isRXCHAR() && (event.getEventValue() == 6 ||   //да, кусок большой, но работает намного стабильнее - принимает полное сообщение. Лучше всего еще и через свич переписать
+                    event.getEventValue() == 8 ||
+                    event.getEventValue() == 10 ||
+                    event.getEventValue() == 12 ||
+                    event.getEventValue() == 14 ||
+                    event.getEventValue() == 16 ||
+                    event.getEventValue() == 18 ||
+                    event.getEventValue() == 20 ||
+                    event.getEventValue() == 22)){
                 try {
                     incomingString = serialPort.readString(event.getEventValue());
                     System.out.println("Полученная строка: " + incomingString);
