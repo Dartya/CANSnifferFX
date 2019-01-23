@@ -46,7 +46,7 @@ public class SampleController {
     private ObservableList<Integer> comParityObserList = FXCollections.observableArrayList();
 
     //строки
-    private static String outgoingString;
+    private static String incomingHexString;
     private static String incomingString;
 
     public void initialize() {
@@ -142,16 +142,8 @@ public class SampleController {
         System.out.println("Попытка отправки сообщения \""+message+"\":");
         message = message + (char)13;   //(char)13 = 0Dh - возврат каретки в ASCII
         try{
-            byte[] buffer = message.getBytes();
-            System.out.print("Массив байт: ");
-            for (int i = 0; i < buffer.length; i++) {
-                if (i == buffer.length-1)
-                    System.out.println(buffer[i]);
-                else
-                    System.out.print(buffer[i]+" ");
-            }
-
-            boolean isSucceed =serialPort.writeString(message);
+            printStringHexCodes(message);
+            boolean isSucceed = serialPort.writeString(message);
             if (isSucceed == true)
                 System.out.println("Отправка успешна.");
             else
@@ -163,6 +155,17 @@ public class SampleController {
 
     public void getMessage(String message){
         incomingPacket.setText(message);
+    }
+
+    public void printStringHexCodes(String message){
+        byte[] buffer = message.getBytes();
+        System.out.print("Массив байт: ");
+        for (int i = 0; i < buffer.length; i++) {
+            if (i == buffer.length-1)
+                System.out.println(buffer[i]);
+            else
+                System.out.print(buffer[i]+" ");
+        }
     }
 
     public void exitAction(ActionEvent actionEvent) {
