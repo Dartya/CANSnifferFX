@@ -5,12 +5,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import jssc.*;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.EventListener;
 
-public class SampleController implements SerialPortEventListener {
+import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class SampleController {
     public TextField outcomingPacket;
     public TextField incomingPacket;
     public Button sendButton;
@@ -46,8 +46,8 @@ public class SampleController implements SerialPortEventListener {
     private ObservableList<Integer> comParityObserList = FXCollections.observableArrayList();
 
     //строки
-    private String outgoingString;
-    private String incomingString;
+    private static String outgoingString;
+    private static String incomingString;
 
     public void initialize() {
         // getting serial ports list into the array
@@ -77,7 +77,7 @@ public class SampleController implements SerialPortEventListener {
         initComBaudRates();
         comSpeedsObserList.setAll(baudRates);
         speedCB.setItems(comSpeedsObserList);
-        speedCB.setValue(comSpeedsObserList.get(0));
+        speedCB.setValue(115200);
 
         //инициализация комбобокса стоп-битов
         initComStopBits();
@@ -116,38 +116,52 @@ public class SampleController implements SerialPortEventListener {
     }
 
     private void initSerialPort(){
+        //serialPort = new SerialPort("COM5");
         serialPort = new SerialPort((String)portNumberCB.getValue());
 
         try{
+            //Открываем порт
             serialPort.openPort();
-
-            serialPort.setParams(SerialPort.BAUDRATE_9600,
+            //Выставляем параметры
+            serialPort.setParams(SerialPort.BAUDRATE_115200,
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);
+            //Включаем аппаратное управление потоком
+            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+            /*serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT); - не работает */
 
-            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
-                    SerialPort.FLOWCONTROL_RTSCTS_OUT);
-
+            //Устанавливаем ивент листенер и маску
             serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-            //отдаем сообщение
-            if (outcomingPacket.getText() != null || outcomingPacket.getText() != "")
-                sendMessage(outcomingPacket.getText());
         } catch (SerialPortException exc){
             System.out.println("Ошибка инициализации порта! "+ exc);
         }
     }
 
     private void sendMessage(String message){
+        System.out.println("Попытка отправки сообщения \""+message+"\":");
+        message = message + (char)13;   //(char)13 = 0Dh - возврат каретки в ASCII
         try{
-            serialPort.writeString(message);
-        } catch (SerialPortException exc){
-            System.out.println("Ошибка передачи! "+ exc);
+            byte[] buffer = message.getBytes();
+            System.out.print("Массив байт: ");
+            for (int i = 0; i < buffer.length; i++) {
+                if (i == buffer.length-1)
+                    System.out.println(buffer[i]);
+                else
+                    System.out.print(buffer[i]+" ");
+            }
+
+            boolean isSucceed =serialPort.writeString(message);
+            if (isSucceed == true)
+                System.out.println("Отправка успешна.");
+            else
+                System.out.println("Отправка не удалась.");
+        } catch (Exception exc){
+            System.out.println("Ошибка передачи сообщения! "+ exc);
         }
     }
 
-    private void getMessage(String message){
-
+    public void getMessage(String message){
         incomingPacket.setText(message);
     }
 
@@ -168,26 +182,22 @@ public class SampleController implements SerialPortEventListener {
     }
 
     public void recieveButtonAction(ActionEvent actionEvent) {
-
+        getMessage(incomingString);
     }
 
     public void autoAnswerAction(ActionEvent actionEvent) {
 
     }
 
-    public void serialEvent(SerialPortEvent serialPortEvent) {
-
-    }
-
     private static class PortReader implements SerialPortEventListener {
         public void serialEvent(SerialPortEvent event) {
-            if(event.isRXCHAR() && event.getEventValue() > 0) {
+            if(event.isRXCHAR() && event.getEventValue() == 8) { // где 8 - количество полученных байт - для
                 try {
-                    String receivedData = serialPort.readString(event.getEventValue());
-                    System.out.println("Received response: " + receivedData);
+                    incomingString = serialPort.readString(event.getEventValue());
+                    System.out.println("Полученная строка: " + incomingString);
                 }
                 catch (SerialPortException ex) {
-                    System.out.println("Error in receiving string from COM-port: " + ex);
+                    System.out.println("Ошибка получения строки из COM-порта: " + ex);
                 }
             }
         }
