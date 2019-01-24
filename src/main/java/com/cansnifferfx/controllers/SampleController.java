@@ -5,38 +5,37 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import jssc.*;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class SampleController {
+    //FXML Views
     public TextField outcomingPacket;
     public TextField incomingPacket;
     public Button sendButton;
     public TextField desktopId;
     public TextField desktopDataSize;
     public TextField desktopData;
-    public TextField desktopCRC;
     public Button recieveButton;
     public TextField deviceId;
     public TextField deviceDataSize;
     public TextField deviceData;
-    public TextField deviceCRC;
     public ListView recievedPacketsList;
     public ListView sendedPacketsList;
     public ComboBox portNumberCB;
     public ComboBox stopbitCB;
-    public TextField intervalBetweenByteRecieve;
     public CheckBox autoAnswerCheckBox;
     public ComboBox speedCB;
     public ComboBox parityCB;
-    public TextField intervalBetweenByteSend;
-    public TextField period;
     public static SerialPort serialPort;
 
     //ArrayLists
     private ArrayList<Integer> baudRates = new ArrayList<Integer>();
     private ArrayList<Integer> stopBits = new ArrayList<Integer>();
     private ArrayList<Integer> parity = new ArrayList<Integer>();
+
     //ObservableArrayLists
     private ObservableList<String> comPortsObserList = FXCollections.observableArrayList();
     private ObservableList<Integer> comSpeedsObserList = FXCollections.observableArrayList();
@@ -44,7 +43,6 @@ public class SampleController {
     private ObservableList<Integer> comParityObserList = FXCollections.observableArrayList();
 
     //строки
-    private static String incomingHexString;
     private static String incomingString;
 
     public void initialize() {
@@ -114,20 +112,18 @@ public class SampleController {
     }
 
     private void initSerialPort(){
-        //serialPort = new SerialPort("COM5");
         serialPort = new SerialPort((String)portNumberCB.getValue());
 
         try{
             //Открываем порт
             serialPort.openPort();
-            //Выставляем параметры
+            //Выставляем параметры порта
             serialPort.setParams(SerialPort.BAUDRATE_115200,
                     SerialPort.DATABITS_8,
                     SerialPort.STOPBITS_1,
                     SerialPort.PARITY_NONE);
             //Включаем аппаратное управление потоком
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-            /*serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT); - не работает */
 
             //Устанавливаем ивент листенер и маску
             serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
@@ -191,24 +187,37 @@ public class SampleController {
     }
 
     private static class PortReader implements SerialPortEventListener {
+        byte[] buffer;
         public void serialEvent(SerialPortEvent event) {
-            if(event.isRXCHAR() && (event.getEventValue() == 6 ||   //да, кусок большой, но работает намного стабильнее - принимает полное сообщение. Лучше всего еще и через свич переписать
-                    event.getEventValue() == 8 ||
-                    event.getEventValue() == 10 ||
-                    event.getEventValue() == 12 ||
-                    event.getEventValue() == 14 ||
-                    event.getEventValue() == 16 ||
-                    event.getEventValue() == 18 ||
-                    event.getEventValue() == 20 ||
-                    event.getEventValue() == 22)){
+            if (event.isRXCHAR() && (event.getEventValue() >= 6 && event.getEventValue() <= 22)){
+
                 try {
-                    incomingString = serialPort.readString(event.getEventValue());
-                    System.out.println("Полученная строка: " + incomingString);
+                    buffer = getData();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-                catch (SerialPortException ex) {
-                    System.out.println("Ошибка получения строки из COM-порта: " + ex);
+                System.out.print("Полученный массив байт: ");
+                for (int i = 0; i < buffer.length; i++) {
+                    if (buffer[i] != 13)
+                        System.out.print(buffer[i]+" ");
+                    else System.out.println(buffer[i]);
                 }
             }
+        }
+        byte[] getData() throws SerialPortException, IOException {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] b;
+
+            try {
+                while ((b = serialPort.readBytes(1, 100)) != null) {
+                    baos.write(b);
+                    //System.out.println ("Wrote: " + b.length + " bytes");
+                }
+                //System.out.println("Returning: " + Arrays.toString(baos.toByteArray()));
+            } catch (SerialPortTimeoutException ex) {
+                //не нужно отлавливать эту ошибку - она просто означает, что нет данных для чтения. Не нужно срать в терминал по такм пустякам.
+            }
+            return baos.toByteArray();
         }
     }
 }

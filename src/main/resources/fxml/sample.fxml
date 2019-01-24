@@ -112,19 +112,7 @@
                                  </HBox.margin>
                               </TextField>
                            </children></HBox>
-                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0">
-                           <children>
-                              <Label text="CRC">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="desktopCRC">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="69.0" right="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children></HBox>
+                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
                      </children>
                   </AnchorPane>
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
@@ -181,20 +169,7 @@
                               </TextField>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0">
-                           <children>
-                              <Label text="CRC">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="deviceCRC" editable="false">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="69.0" right="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children>
-                        </HBox>
+                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
                      </children>
                   </AnchorPane>
                </children>
@@ -245,16 +220,6 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <Label text="Прием: межбайт. интервал, мс">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <TextField fx:id="intervalBetweenByteRecieve" alignment="CENTER" prefHeight="25.0" prefWidth="30.0" text="40">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" />
-                     </HBox.margin>
-                  </TextField>
                   <CheckBox fx:id="autoAnswerCheckBox" mnemonicParsing="false" onAction="#autoAnswerAction" text="Автомат.">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" />
@@ -269,7 +234,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" />
                      </HBox.margin>
                   </Label>
-                  <ComboBox fx:id="speedCB" prefHeight="25.0" prefWidth="80.0">
+                  <ComboBox fx:id="speedCB" prefHeight="25.0" prefWidth="110.0">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" />
                      </HBox.margin>
@@ -284,29 +249,11 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <Label text="Посылка: межбайт. интервал, мс">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <TextField fx:id="intervalBetweenByteSend" alignment="CENTER" prefHeight="30.0" prefWidth="25.0" text="0">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" />
-                     </HBox.margin>
-                  </TextField>
                   <Label alignment="CENTER_RIGHT" text="Период">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="period" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="50.0">
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" />
-                     </padding>
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" />
-                     </HBox.margin>
-                  </TextField>
                </children>
             </HBox>
          </children>
