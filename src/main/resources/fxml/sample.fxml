@@ -33,6 +33,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Справка">
             <items>
+                  <MenuItem fx:id="ASCIITableWin" mnemonicParsing="false" onAction="#openASCIITableWinAction" text="Таблица ASCII" />
               <MenuItem mnemonicParsing="false" onAction="#aboutAction" text="О программе" />
             </items>
           </Menu>
@@ -80,7 +81,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField fx:id="desktopId">
+                              <TextField fx:id="desktopId" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
@@ -93,7 +94,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField fx:id="desktopDataSize">
+                              <TextField fx:id="desktopDataSize" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="17.0" right="5.0" />
                                  </HBox.margin>
@@ -106,9 +107,9 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField fx:id="desktopData">
+                              <TextField fx:id="desktopData" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
-                                    <Insets bottom="5.0" left="48.0" right="5.0" />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
                               </TextField>
                            </children></HBox>
@@ -134,7 +135,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField fx:id="deviceId" editable="false">
+                              <TextField fx:id="deviceId" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
@@ -148,9 +149,9 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField fx:id="deviceDataSize" editable="false">
+                              <TextField fx:id="deviceDataSize" editable="false" HBox.hgrow="SOMETIMES">
                                  <HBox.margin>
-                                    <Insets bottom="5.0" left="17.0" right="5.0" />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
                               </TextField>
                            </children>
@@ -162,9 +163,9 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <TextField fx:id="deviceData" editable="false">
+                              <TextField fx:id="deviceData" editable="false" HBox.hgrow="SOMETIMES">
                                  <HBox.margin>
-                                    <Insets bottom="5.0" left="48.0" right="5.0" />
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>
                               </TextField>
                            </children>
@@ -180,12 +181,12 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <ListView fx:id="recievedPacketsList" prefHeight="141.0" prefWidth="297.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ListView fx:id="sendedPacketsList" prefHeight="141.0" prefWidth="297.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <ListView fx:id="sendedPacketsList" layoutX="-38.0" layoutY="-59.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ListView fx:id="recievedPacketsList" layoutX="-38.0" layoutY="-59.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
         </items>

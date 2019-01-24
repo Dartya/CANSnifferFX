@@ -1,5 +1,7 @@
 package com.cansnifferfx.controllers;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,6 +31,9 @@ public class SampleController {
     public CheckBox autoAnswerCheckBox;
     public ComboBox speedCB;
     public ComboBox parityCB;
+    public MenuItem ASCIITableWin;
+
+    //Some objects
     public static SerialPort serialPort;
 
     //ArrayLists
@@ -41,11 +46,22 @@ public class SampleController {
     private ObservableList<Integer> comSpeedsObserList = FXCollections.observableArrayList();
     private ObservableList<Integer> comStopBitsObserList = FXCollections.observableArrayList();
     private ObservableList<Integer> comParityObserList = FXCollections.observableArrayList();
+    private ObservableList<String> incomingMessages = FXCollections.observableArrayList();
+    private ObservableList<String> outgoingMessages = FXCollections.observableArrayList();
 
     //строки
     private static String incomingString;
+    private static String savedIncomingString = "";
+
+    //счетчики
+    private static int countMessages;
+    private static int callsOfGetMessageMethod;
+
+    //флаги
+    boolean autoGetMessageFlag = false;
 
     public void initialize() {
+
         // getting serial ports list into the array
         String[] portNames = SerialPortList.getPortNames();
 
@@ -89,6 +105,12 @@ public class SampleController {
 
         //первичная инициализация серийного порта
         initSerialPort();
+
+        //инициализируем
+        recievedPacketsList.setItems(incomingMessages);
+        recievedPacketsList.setFixedCellSize(25);
+        sendedPacketsList.setItems(outgoingMessages);
+        sendedPacketsList.setFixedCellSize(25);
     }
 
     private void initComBaudRates(){   //метод инициализации листа скоростей настраиваемого порта
@@ -145,10 +167,63 @@ public class SampleController {
         } catch (Exception exc){
             System.out.println("Ошибка передачи сообщения! "+ exc);
         }
+
+        //работаем с вьюхами окна:
+        String strbuf = "";
+        byte[] buffer = message.getBytes();
+        if ((desktopId.getText().equals("") || desktopDataSize.getText().equals("") || desktopData.getText().equals("")) && !outcomingPacket.getText().equals("") ){
+            //устанавливаем байты идентификатора
+            for (int i = 1; i < 4; i++) {
+                strbuf = strbuf + (buffer[i]) + " ";
+            }
+            desktopId.setText(strbuf);
+            strbuf = "";
+
+            //устанавливаем длину пакета
+            desktopDataSize.setText(String.valueOf((char) buffer[4]));
+
+            //устанавливаем байты данных
+            for (int i = 5; i < buffer.length - 1; i++) {
+                strbuf = strbuf + (buffer[i]) + " ";
+            }
+            desktopData.setText(strbuf);
+        }
+        //автоматическая прокрутка до последнего сообщения
+        outgoingMessages.add(message);
+        sendedPacketsList.scrollTo(outgoingMessages.size());
     }
 
     public void getMessage(String message){
-        incomingPacket.setText(message);
+        if ((savedIncomingString.equals(incomingString)) && (countMessages == callsOfGetMessageMethod))
+            return;
+        else {
+            incomingPacket.setText(message);
+            byte[] buffer = message.getBytes();
+            String strbuf = "";
+            //устанавливаем байты идентификатора
+            for (int i = 1; i < 4; i++) {
+                strbuf = strbuf + (buffer[i]) + " ";
+            }
+            deviceId.setText(strbuf);
+            strbuf = "";
+
+            //устанавливаем длину пакета
+            deviceDataSize.setText(String.valueOf((char) buffer[4]));
+
+            //устанавливаем байты данных
+            for (int i = 5; i < buffer.length - 1; i++) {
+                strbuf = strbuf + (buffer[i]) + " ";
+            }
+            deviceData.setText(strbuf);
+
+            //обновляем обсервабллист
+            incomingMessages.add(incomingString);
+            recievedPacketsList.scrollTo(incomingMessages.size());
+
+            callsOfGetMessageMethod++;
+            //автоматическая прокрутка до последнего сообщения
+            savedIncomingString = incomingString;
+        }
     }
 
     public void printStringHexCodes(String message){
@@ -175,14 +250,51 @@ public class SampleController {
     }
 
     public void sendButtonAction(ActionEvent actionEvent) {
-        sendMessage(outcomingPacket.getText());
+        if (!outcomingPacket.getText().equals("") || outcomingPacket.getText() == null)
+            sendMessage(outcomingPacket.getText());
+        else if (!(desktopId.getText().equals("") || desktopDataSize.getText().equals("") || desktopData.getText().equals("")))
+        {
+            String strbuf = "";
+            String strresult = "t";
+            byte[] buffer1;
+            byte[] buffer2;
+            //считываем идентификатор
+            buffer1 = desktopId.getText().getBytes();
+            for (int i = 0; i < buffer1.length; i++) {
+                strbuf = strbuf+(char)buffer1[i];
+            }
+            strbuf.replaceAll("\\s","");
+            strresult = strresult+strbuf;
+
+            //считываем длину пакета
+            strbuf = desktopDataSize.getText();
+            strbuf.replaceAll("\\s","");
+            strresult = strresult+strbuf;
+            strbuf = "";
+
+            //считываем пакет данных
+            buffer2 = desktopData.getText().getBytes();
+            for (int i = 0; i < buffer2.length; i++) {
+                strbuf = strbuf+(char)buffer2[i];
+            }
+            strbuf.replaceAll("\\s","");
+            strresult = strresult+strbuf;
+
+            outcomingPacket.setText(strresult);
+            sendMessage(strresult);
+        }
     }
 
     public void recieveButtonAction(ActionEvent actionEvent) {
-        getMessage(incomingString);
+        if (countMessages != 0)
+            getMessage(incomingString);
     }
 
     public void autoAnswerAction(ActionEvent actionEvent) {
+        autoGetMessageFlag = autoAnswerCheckBox.isSelected();
+    }
+
+    public void openASCIITableWinAction(ActionEvent actionEvent) {
 
     }
 
@@ -190,7 +302,6 @@ public class SampleController {
         byte[] buffer;
         public void serialEvent(SerialPortEvent event) {
             if (event.isRXCHAR() && (event.getEventValue() >= 6 && event.getEventValue() <= 22)){
-
                 try {
                     buffer = getData();
                 }catch (Exception e){
@@ -202,6 +313,11 @@ public class SampleController {
                         System.out.print(buffer[i]+" ");
                     else System.out.println(buffer[i]);
                 }
+                incomingString = "";
+                for (int i = 0; i < buffer.length; i++) {
+                    incomingString = incomingString+(char)buffer[i];
+                }
+                countMessages++;
             }
         }
         byte[] getData() throws SerialPortException, IOException {
@@ -215,7 +331,7 @@ public class SampleController {
                 }
                 //System.out.println("Returning: " + Arrays.toString(baos.toByteArray()));
             } catch (SerialPortTimeoutException ex) {
-                //не нужно отлавливать эту ошибку - она просто означает, что нет данных для чтения. Не нужно срать в терминал по такм пустякам.
+                //не нужно отлавливать эту ошибку - она просто означает, что нет данных для чтения. Не нужно срать в терминал по таким пустякам.
             }
             return baos.toByteArray();
         }
