@@ -6,7 +6,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import jssc.*;
 
 import java.io.ByteArrayOutputStream;
@@ -307,7 +313,25 @@ public class SampleController {
     }
 
     public void openASCIITableWinAction(ActionEvent actionEvent) {
+        try {
+            Stage aboutstage = new Stage();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/asciiWin.fxml"));
+            Parent root = loader.load();
+            aboutstage.setTitle("Таблица символов ASCII");
+            aboutstage.setMinHeight(500);
+            aboutstage.setMinWidth(700);
+            aboutstage.setResizable(false);
+            aboutstage.setScene(new Scene(root));
+            aboutstage.initModality(Modality.APPLICATION_MODAL);
+            //stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());    //указывается родительское окно
+            //правда, данный метод инициализации родительского окна не работает с элеменами основного меню, поэтому
+            aboutstage.show();         //не используется в связке с stage.initModality(Modality.WINDOW_MODAL);
+            //aboutstage.showAndWait();    //зато используется этот метод в связке с stage.initModality(Modality.APPLICATION_MODAL);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private class PortReader implements SerialPortEventListener {

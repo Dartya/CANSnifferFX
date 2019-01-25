@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cansnifferfx.controllers.asciiController">
+   <children>
+      <ImageView fitHeight="445.0" fitWidth="688.0" layoutX="14.0" layoutY="14.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="5.0">
+         <image>
+            <Image url="@../image/asciifull.gif" />
+         </image>
+      </ImageView>
+      <Button fx:id="closeButton" layoutX="260.0" layoutY="366.0" mnemonicParsing="false" onAction="#onClose" prefHeight="25.0" prefWidth="70.0" text="OK" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="270.0" />
+   </children>
+</AnchorPane>
