@@ -39,6 +39,9 @@ public class SampleController {
     public ComboBox speedCB;
     public ComboBox parityCB;
     public MenuItem ASCIITableWin;
+    public Button generateMessageButton;
+    public Button copyMessageButton;
+    public TextField generatedTextTextField ;
 
     //Some objects
     public static SerialPort serialPort;
@@ -65,7 +68,7 @@ public class SampleController {
     private static int callsOfGetMessageMethod;
 
     //флаги
-    static boolean autoGetMessageFlag = false;
+    private static boolean autoGetMessageFlag = false;
 
     public void initialize() {
 
@@ -127,7 +130,6 @@ public class SampleController {
                 autoGetMessageFlag = newValue; //присваиваем переменной новое значение чекбаттона
             }
         });
-
     }
 
     private void initComBaudRates(){   //метод инициализации листа скоростей настраиваемого порта
@@ -185,7 +187,6 @@ public class SampleController {
         } catch (Exception exc){
             System.out.println("Ошибка передачи сообщения! "+ exc);
         }
-
         //работаем с вьюхами окна:
         String strbuf = "";
         byte[] buffer = message.getBytes();
@@ -206,6 +207,7 @@ public class SampleController {
             }
             desktopData.setText(strbuf);
         }
+
         //автоматическая прокрутка до последнего сообщения
         outgoingMessages.add(message);
         sendedPacketsList.scrollTo(outgoingMessages.size());
@@ -260,7 +262,8 @@ public class SampleController {
     }
 
     public void deleteAction(ActionEvent actionEvent) {
-
+        sendedPacketsList.getItems().clear();
+        recievedPacketsList.getItems().clear();
     }
 
     public void aboutAction(ActionEvent actionEvent){
@@ -270,37 +273,6 @@ public class SampleController {
     public void sendButtonAction(ActionEvent actionEvent) {
         if (!outcomingPacket.getText().equals("") || outcomingPacket.getText() == null)
             sendMessage(outcomingPacket.getText());
-        else if (!(desktopId.getText().equals("") || desktopDataSize.getText().equals("") || desktopData.getText().equals("")))
-        {
-            String strbuf = "";
-            String strresult = "t";
-            byte[] buffer1;
-            byte[] buffer2;
-            //считываем идентификатор
-            buffer1 = desktopId.getText().getBytes();
-            for (int i = 0; i < buffer1.length; i++) {
-                strbuf = strbuf+(char)buffer1[i];
-            }
-            strbuf.replaceAll("\\s","");
-            strresult = strresult+strbuf;
-
-            //считываем длину пакета
-            strbuf = desktopDataSize.getText();
-            strbuf.replaceAll("\\s","");
-            strresult = strresult+strbuf;
-            strbuf = "";
-
-            //считываем пакет данных
-            buffer2 = desktopData.getText().getBytes();
-            for (int i = 0; i < buffer2.length; i++) {
-                strbuf = strbuf+(char)buffer2[i];
-            }
-            strbuf.replaceAll("\\s","");
-            strresult = strresult+strbuf;
-
-            outcomingPacket.setText(strresult);
-            sendMessage(strresult);
-        }
     }
 
     public void recieveButtonAction(ActionEvent actionEvent) {
@@ -334,8 +306,49 @@ public class SampleController {
         }
     }
 
+    public void generateMessageAction(ActionEvent actionEvent) {
+        if (!(desktopId.getText().equals("") || desktopDataSize.getText().equals("") || desktopData.getText().equals("")))
+        {
+            String strbuf = "";
+            String strresult = "t";
+            byte[] buffer1;
+            byte[] buffer2;
+            //считываем идентификатор
+            buffer1 = desktopId.getText().getBytes();
+            for (int i = 0; i < buffer1.length; i++) {
+                strbuf = strbuf+(char)buffer1[i];
+            }
+            strbuf.replaceAll("\\s","");
+            strresult = strresult+strbuf;
+
+            //считываем длину пакета
+            strbuf = desktopDataSize.getText();
+            strbuf.replaceAll("\\s","");
+            strresult = strresult+strbuf;
+            strbuf = "";
+
+            //считываем пакет данных
+            buffer2 = desktopData.getText().getBytes();
+            for (int i = 0; i < buffer2.length; i++) {
+                strbuf = strbuf+(char)buffer2[i];
+            }
+            strbuf.replaceAll("\\s","");
+            strresult = strresult+strbuf;
+
+            generatedTextTextField.setText(strresult);
+            /*
+            outcomingPacket.setText(strresult);
+            sendMessage(strresult);*/
+        }
+    }
+
+    public void copyMessageAction(ActionEvent actionEvent) {
+        outcomingPacket.setText(generatedTextTextField.getText());
+    }
+
     private class PortReader implements SerialPortEventListener {
         byte[] buffer;
+
         SampleController sampleController;
 
         PortReader(SampleController sampleController){
@@ -366,7 +379,7 @@ public class SampleController {
                 if (autoGetMessageFlag) {
                     Platform.runLater(new Runnable() {
                         public void run() {
-                            getMessage(incomingString);
+                            sampleController.getMessage(incomingString);
                         }
                     });
                 }

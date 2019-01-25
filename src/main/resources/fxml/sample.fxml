@@ -26,9 +26,9 @@
               <MenuItem mnemonicParsing="false" onAction="#exitAction" text="Выход" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Правка">
+          <Menu mnemonicParsing="false" text="Терминал">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#deleteAction" text="Удалить" />
+              <MenuItem mnemonicParsing="false" onAction="#deleteAction" text="Очистить" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Справка">
@@ -113,7 +113,24 @@
                                  </HBox.margin>
                               </TextField>
                            </children></HBox>
-                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
+                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0">
+                           <children>
+                              <Button fx:id="generateMessageButton" mnemonicParsing="false" onAction="#generateMessageAction" text="Сгенерировать">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="copyMessageButton" mnemonicParsing="false" onAction="#copyMessageAction" text="Скопировать">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <TextField fx:id="generatedTextTextField" editable="false" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children></HBox>
                      </children>
                   </AnchorPane>
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
