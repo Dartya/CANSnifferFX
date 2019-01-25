@@ -128,6 +128,8 @@ public class SampleController {
         autoAnswerCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 autoGetMessageFlag = newValue; //присваиваем переменной новое значение чекбаттона
+                if (oldValue == true && newValue == false)
+                    callsOfGetMessageMethod = countMessages;
             }
         });
     }
@@ -276,7 +278,7 @@ public class SampleController {
     }
 
     public void recieveButtonAction(ActionEvent actionEvent) {
-        if (countMessages != 0)
+        if (countMessages != 0 && !autoGetMessageFlag)
             getMessage(incomingString);
     }
 

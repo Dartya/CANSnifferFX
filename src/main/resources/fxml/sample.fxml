@@ -187,7 +187,14 @@
                               </TextField>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0" />
+                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0">
+                           <children>
+                              <CheckBox fx:id="autoAnswerCheckBox" mnemonicParsing="false" onAction="#autoAnswerAction" text="Автоматический прием кадров" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
+                                 </HBox.margin>
+                              </CheckBox>
+                           </children></HBox>
                      </children>
                   </AnchorPane>
                </children>
@@ -228,25 +235,6 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <Label text="Стоп-бит">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <ComboBox fx:id="stopbitCB" prefHeight="25.0" prefWidth="100.0">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" />
-                     </HBox.margin>
-                  </ComboBox>
-                  <CheckBox fx:id="autoAnswerCheckBox" mnemonicParsing="false" onAction="#autoAnswerAction" text="Автомат.">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" />
-                     </HBox.margin>
-                  </CheckBox>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0">
-               <children>
                   <Label text="Скорость">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" />
@@ -267,13 +255,19 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <Label alignment="CENTER_RIGHT" text="Период">
+                  <Label text="Стоп-бит">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" />
                      </HBox.margin>
                   </Label>
+                  <ComboBox fx:id="stopbitCB" prefHeight="25.0" prefWidth="100.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" />
+                     </HBox.margin>
+                  </ComboBox>
                </children>
             </HBox>
+            <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" />
          </children>
       </VBox>
    </children>
