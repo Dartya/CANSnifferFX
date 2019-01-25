@@ -1,7 +1,8 @@
 package com.cansnifferfx.controllers;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -58,7 +59,7 @@ public class SampleController {
     private static int callsOfGetMessageMethod;
 
     //флаги
-    boolean autoGetMessageFlag = false;
+    static boolean autoGetMessageFlag = false;
 
     public void initialize() {
 
@@ -106,11 +107,21 @@ public class SampleController {
         //первичная инициализация серийного порта
         initSerialPort();
 
-        //инициализируем
+        //инициализация листов сообщений
         recievedPacketsList.setItems(incomingMessages);
         recievedPacketsList.setFixedCellSize(25);
         sendedPacketsList.setItems(outgoingMessages);
         sendedPacketsList.setFixedCellSize(25);
+
+        //подключаем листенер чекбаттона автозаполнения
+        autoGetMessageFlag = autoAnswerCheckBox.isSelected();
+
+        autoAnswerCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                autoGetMessageFlag = newValue; //присваиваем переменной новое значение чекбаттона
+            }
+        });
+
     }
 
     private void initComBaudRates(){   //метод инициализации листа скоростей настраиваемого порта
@@ -148,7 +159,8 @@ public class SampleController {
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 
             //Устанавливаем ивент листенер и маску
-            serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+            serialPort.addEventListener(new PortReader(this), SerialPort.MASK_RXCHAR);
+
         } catch (SerialPortException exc){
             System.out.println("Ошибка инициализации порта! "+ exc);
         }
@@ -291,15 +303,21 @@ public class SampleController {
     }
 
     public void autoAnswerAction(ActionEvent actionEvent) {
-        autoGetMessageFlag = autoAnswerCheckBox.isSelected();
+
     }
 
     public void openASCIITableWinAction(ActionEvent actionEvent) {
 
     }
 
-    private static class PortReader implements SerialPortEventListener {
+    private class PortReader implements SerialPortEventListener {
         byte[] buffer;
+        SampleController sampleController;
+
+        PortReader(SampleController sampleController){
+            this.sampleController = sampleController;
+        }
+
         public void serialEvent(SerialPortEvent event) {
             if (event.isRXCHAR() && (event.getEventValue() >= 6 && event.getEventValue() <= 22)){
                 try {
@@ -318,9 +336,19 @@ public class SampleController {
                     incomingString = incomingString+(char)buffer[i];
                 }
                 countMessages++;
+
+                //The user interface cannot be directly updated from a non-application thread. Instead, use Platform.runLater(), with the logic inside the Runnable object. For example:
+                //https://stackoverflow.com/questions/17850191/why-am-i-getting-java-lang-illegalstateexception-not-on-fx-application-thread
+                if (autoGetMessageFlag) {
+                    Platform.runLater(new Runnable() {
+                        public void run() {
+                            getMessage(incomingString);
+                        }
+                    });
+                }
             }
         }
-        byte[] getData() throws SerialPortException, IOException {
+        private byte[] getData() throws SerialPortException, IOException {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] b;
 
