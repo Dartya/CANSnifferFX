@@ -1,0 +1,24 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="CANSnifferFX">
+    <output-path>$PROJECT_DIR$/out/artifacts/CANSnifferFX</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="com.cansnifferfx.Main" />
+        <option name="description" value="" />
+        <option name="height" value="700" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="nativeBundle" value="all" />
+        <option name="title" value="CANSnifferFX" />
+        <option name="vendor" value="A.Pitasov" />
+        <option name="version" value="0.1.0" />
+        <option name="width" value="760" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="CANSnifferFX.jar">
+        <element id="module-output" name="CANSnifferFX" />
+        <element id="library" level="project" name="Maven: org.scream3r:jssc:2.8.0" />
+      </element>
+    </root>
+  </artifact>
+</component>

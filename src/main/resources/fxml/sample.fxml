@@ -270,11 +270,11 @@
                   <Insets top="5.0" />
                </padding>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
+            <HBox alignment="CENTER" maxHeight="200.0" prefHeight="200.0" prefWidth="200.0">
                <children>
                   <AnchorPane>
                      <children>
-                        <ListView fx:id="consoleListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="60.0" minWidth="690.0" prefHeight="150.0" prefWidth="1920.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
+                        <ListView fx:id="consoleListView" maxHeight="150.0" maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="690.0" prefHeight="150.0" prefWidth="1920.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                      </children>
                   </AnchorPane>
                </children></HBox>

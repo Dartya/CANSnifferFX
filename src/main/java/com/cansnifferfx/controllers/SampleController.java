@@ -264,8 +264,8 @@ public class SampleController {
             serialPort.closePort();
             serialPort.removeEventListener();
         }catch(SerialPortException exc){
-            System.out.println("Ошибка закрытия порта! "+ exc);
-            printInConsole("Ошибка закрытия порта! "+ exc);
+            System.out.println("Ошибка завершения работы порта! "+ exc);
+            printInConsole("Ошибка завершения работы порта! "+ exc);
         }
     }
 
@@ -281,8 +281,8 @@ public class SampleController {
                 printInConsole("Отправка успешна");
             }
             else {
-                System.out.println("Отправка не удалась.");
-                printInConsole("Отправка не удалась.");
+                System.out.println("Отправка не удалась. Проверьте правильность подключения COM-порта.");
+                printInConsole("Отправка не удалась. Проверьте правильность подключения COM-порта.");
             }
         } catch (Exception exc){
             System.out.println("Ошибка передачи сообщения! "+ exc);

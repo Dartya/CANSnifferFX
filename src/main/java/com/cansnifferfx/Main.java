@@ -4,10 +4,14 @@ import com.cansnifferfx.controllers.SampleController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Main extends Application {
     private static final String FXML_MAIN = "/fxml/sample.fxml";
@@ -27,6 +31,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setMinHeight(700);
         primaryStage.setMinWidth(760);
+        primaryStage.getIcons().add(new Image("image/icon.png"));
         primaryStage.show();
     }
 
@@ -47,6 +52,26 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+        //launch(args);
+
+        try
+        {
+            Main.launch(args);
+        }
+        catch (Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            try
+            {
+                PrintWriter pw = new PrintWriter(new File("<somefilename.txt>"));
+                e.printStackTrace(pw);
+                pw.close();
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
+            }
+        }
+
     }
 }
