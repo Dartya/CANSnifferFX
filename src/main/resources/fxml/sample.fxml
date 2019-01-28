@@ -8,15 +8,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="700.0" prefHeight="700.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cansnifferfx.controllers.SampleController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="700.0" prefHeight="723.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cansnifferfx.controllers.SampleController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="600.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" valignment="TOP" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="265.0" minHeight="265.0" prefHeight="265.0" valignment="CENTER" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="1.7976931348623157E308" minHeight="248.0" prefHeight="359.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="65.0" minHeight="65.0" prefHeight="65.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="1.7976931348623157E308" minHeight="200.0" prefHeight="360.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="150.0" minHeight="150.0" prefHeight="200.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <MenuBar>
@@ -201,7 +201,7 @@
             </HBox>
          </children>
       </VBox>
-      <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" GridPane.rowIndex="2">
+      <SplitPane dividerPositions="0.4956395348837209" prefHeight="160.0" prefWidth="200.0" GridPane.rowIndex="2">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
@@ -221,9 +221,9 @@
             <Insets bottom="5.0" left="5.0" right="5.0" />
          </GridPane.margin>
       </SplitPane>
-      <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="3">
+      <VBox alignment="TOP_CENTER" GridPane.rowIndex="3">
          <children>
-            <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0">
+            <HBox alignment="CENTER" minHeight="30.0" prefHeight="30.0" prefWidth="200.0">
                <children>
                   <Label text="Порт">
                      <HBox.margin>
@@ -266,8 +266,18 @@
                      </HBox.margin>
                   </ComboBox>
                </children>
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" />
+            <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <ListView fx:id="consoleListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="60.0" minWidth="690.0" prefHeight="150.0" prefWidth="1920.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+               </children></HBox>
          </children>
       </VBox>
    </children>

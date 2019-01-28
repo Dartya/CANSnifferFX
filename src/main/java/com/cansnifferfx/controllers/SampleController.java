@@ -17,6 +17,7 @@ import jssc.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SampleController {
     //FXML Views
@@ -45,6 +46,7 @@ public class SampleController {
     //Some objects
     public static SerialPort serialPort;
     private static ArrayList<SerialPort> serialPorts = new ArrayList<SerialPort>();
+    public ListView consoleListView;
 
     //ArrayLists
     private ArrayList<Integer> baudRates = new ArrayList<Integer>();
@@ -58,6 +60,7 @@ public class SampleController {
     private ObservableList<Integer> comParityObserList = FXCollections.observableArrayList();
     private ObservableList<String> incomingMessages = FXCollections.observableArrayList();
     private ObservableList<String> outgoingMessages = FXCollections.observableArrayList();
+    private ObservableList<String> consoleMessages = FXCollections.observableArrayList();
 
     //строки
     private static String incomingString;
@@ -78,7 +81,9 @@ public class SampleController {
         //проверка на факт отсутствия доступных ком-портов
         if (portNames.length == 0) {
             System.out.println("Не найдено ни одного доступного ком-порта.");
+            printInConsole("Не найдено ни одного доступного ком-порта.");
             System.out.println("Нажмите Enter для выхода...");
+            printInConsole("Нажмите Enter для выхода...");
             try {
                 System.in.read();
             } catch (IOException e) {
@@ -130,6 +135,9 @@ public class SampleController {
         recievedPacketsList.setFixedCellSize(25);
         sendedPacketsList.setItems(outgoingMessages);
         sendedPacketsList.setFixedCellSize(25);
+        //инициализация консоли
+        consoleListView.setItems(consoleMessages);
+        consoleListView.setFixedCellSize(25);
 
         //подключаем листенер чекбаттона автозаполнения
         autoGetMessageFlag = autoAnswerCheckBox.isSelected();
@@ -145,10 +153,12 @@ public class SampleController {
         portNumberCB.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 System.out.println("Старый порт: "+portNames[(Integer)oldValue]);
+                printInConsole("Старый порт: "+portNames[(Integer)oldValue]);
                 System.out.println("Новый порт: "+portNames[(Integer)newValue]);
+                printInConsole("Новый порт: "+portNames[(Integer)newValue]);
 
                 //закрываем старый порт и удаляем его листенер
-                //shutdownPort(serialPorts.get((Integer)oldValue));
+                shutdownPort(serialPorts.get((Integer)oldValue));
                 //инициализируем новый порт и его листенер
                 initSerialPort(serialPorts.get((Integer)newValue));
                 //сохраняем текущий порт в переменную
@@ -176,6 +186,13 @@ public class SampleController {
                 updatePortParams();
             }
         });
+    }
+
+    private void printInConsole(String message){
+        Date date = new Date();
+        message = date.toString()+": "+message;
+        consoleMessages.add(message);
+        consoleListView.scrollTo(consoleMessages.size());
     }
 
     private void initComBaudRates(){   //метод инициализации листа скоростей настраиваемого порта
@@ -213,6 +230,7 @@ public class SampleController {
             serialPort.addEventListener(new PortReader(this), SerialPort.MASK_RXCHAR);
         } catch (SerialPortException exc){
             System.out.println("Ошибка инициализации порта! "+ exc);
+            printInConsole("Ошибка инициализации порта! "+ exc);
         }
     }
 
@@ -225,6 +243,7 @@ public class SampleController {
 
         }catch(Exception exc){
             System.out.println("Не удалось применить новые настройки ком-порта! "+ exc);
+            printInConsole("Не удалось применить новые настройки ком-порта! "+ exc);
         }
     }
     //метод обновления параметров ком-порта, первая реализация - без параметра
@@ -246,21 +265,28 @@ public class SampleController {
             serialPort.removeEventListener();
         }catch(SerialPortException exc){
             System.out.println("Ошибка закрытия порта! "+ exc);
+            printInConsole("Ошибка закрытия порта! "+ exc);
         }
     }
 
     private void sendMessage(String message){
         System.out.println("Попытка отправки сообщения \""+message+"\":");
+        printInConsole("Попытка отправки сообщения \""+message+"\":");
         message = message + (char)13;   //(char)13 = 0Dh - возврат каретки в ASCII
         try{
             printStringHexCodes(message);
             boolean isSucceed = serialPort.writeString(message);
-            if (isSucceed == true)
+            if (isSucceed == true) {
                 System.out.println("Отправка успешна.");
-            else
+                printInConsole("Отправка успешна");
+            }
+            else {
                 System.out.println("Отправка не удалась.");
+                printInConsole("Отправка не удалась.");
+            }
         } catch (Exception exc){
             System.out.println("Ошибка передачи сообщения! "+ exc);
+            printInConsole("Ошибка передачи сообщения! "+ exc);
         }
         //работаем с вьюхами окна:
         String strbuf = "";
@@ -324,12 +350,18 @@ public class SampleController {
     public void printStringHexCodes(String message){
         byte[] buffer = message.getBytes();
         System.out.print("Массив байт: ");
+        String mes = "Массив байт: ";
         for (int i = 0; i < buffer.length; i++) {
-            if (i == buffer.length-1)
+            if (i == buffer.length-1) {
                 System.out.println(buffer[i]);
-            else
-                System.out.print(buffer[i]+" ");
+                mes = mes+buffer[i];
+            }
+            else {
+                System.out.print(buffer[i] + " ");
+                mes = mes+buffer[i];
+            }
         }
+        printInConsole(mes);
     }
 
     public void exitAction(ActionEvent actionEvent) {
@@ -339,6 +371,7 @@ public class SampleController {
     public void deleteAction(ActionEvent actionEvent) {
         sendedPacketsList.getItems().clear();
         recievedPacketsList.getItems().clear();
+        consoleListView.getItems().clear();
     }
 
     public void aboutAction(ActionEvent actionEvent){
@@ -435,17 +468,22 @@ public class SampleController {
                     e.printStackTrace();
                 }
                 System.out.print("Полученный массив байт: ");
+                String message = ("Полученный массив байт по ком-порту "+event.getPortName()+": ");
                 for (int i = 0; i < buffer.length; i++) {
-                    if (buffer[i] != 13)
-                        System.out.print(buffer[i]+" ");
-                    else System.out.println(buffer[i]);
+                    if (buffer[i] != 13) {
+                        System.out.print(buffer[i] + " ");
+                        message = message+(int)buffer[i] + " ";
+                    }
+                    else {
+                        System.out.println(buffer[i]);
+                        message = message+(int)buffer[i] + " ";
+                    }
                 }
                 incomingString = "";
                 for (int i = 0; i < buffer.length; i++) {
                     incomingString = incomingString+(char)buffer[i];
                 }
                 countMessages++;
-
                 //The user interface cannot be directly updated from a non-application thread. Instead, use Platform.runLater(), with the logic inside the Runnable object. For example:
                 //https://stackoverflow.com/questions/17850191/why-am-i-getting-java-lang-illegalstateexception-not-on-fx-application-thread
                 if (autoGetMessageFlag) {
@@ -455,6 +493,13 @@ public class SampleController {
                         }
                     });
                 }
+
+                final String finMessage = message;
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        printInConsole(finMessage);
+                    }
+                });
             }
         }
         private byte[] getData() throws SerialPortException, IOException {
