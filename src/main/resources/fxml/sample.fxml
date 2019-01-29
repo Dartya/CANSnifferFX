@@ -189,7 +189,7 @@
                         </HBox>
                         <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0">
                            <children>
-                              <CheckBox fx:id="autoAnswerCheckBox" mnemonicParsing="false" onAction="#autoAnswerAction" text="Автоматический прием кадров" HBox.hgrow="ALWAYS">
+                              <CheckBox fx:id="autoAnswerCheckBox" mnemonicParsing="false" text="Автоматический прием кадров" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </HBox.margin>

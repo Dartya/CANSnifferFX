@@ -2,11 +2,14 @@ package com.cansnifferfx;
 
 import com.cansnifferfx.controllers.SampleController;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import jssc.SerialPortException;
 
 import javax.swing.*;
 import java.io.File;
@@ -23,6 +26,16 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         createGUI();
+
+        this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent event) {
+                try{
+                    mainController.closePorts();
+                }catch (SerialPortException exc) {
+                    System.out.println(exc);
+                }
+            }
+        });
     }
 
     private void createGUI() {
@@ -53,25 +66,17 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         //launch(args);
-
-        try
-        {
-            Main.launch(args);
-        }
-        catch (Exception e)
-        {
+        try{
+            launch(args);
+        } catch (Exception e){
             JOptionPane.showMessageDialog(null, e.getMessage());
-            try
-            {
+            try{
                 PrintWriter pw = new PrintWriter(new File("<somefilename.txt>"));
                 e.printStackTrace(pw);
                 pw.close();
-            }
-            catch (IOException e1)
-            {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         }
-
     }
 }

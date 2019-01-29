@@ -78,6 +78,10 @@ public class SampleController {
         //получаем список всех доступных на момент запуска проги com-портов
         final String[] portNames = SerialPortList.getPortNames();
 
+        /*ДЛЯ ПОСЛЕДУЮЩИХ ВЕРСИЙ!:
+        Для обновления списка устройств нужно использовать библиотеку https://code.google.com/archive/p/javahidapi/ .
+        Далее нужно создать новый поток и контролировать в нем обновление списка подключенных устройств.*/
+
         //проверка на факт отсутствия доступных ком-портов
         if (portNames.length == 0) {
             System.out.println("Не найдено ни одного доступного ком-порта.");
@@ -261,8 +265,12 @@ public class SampleController {
 
     private void shutdownPort(SerialPort serialPort){
         try {
-            serialPort.closePort();
-            serialPort.removeEventListener();
+            if (serialPort != null && serialPort.isOpened()){
+                serialPort.purgePort(1);
+                serialPort.purgePort(2);
+                serialPort.closePort();
+                //serialPort.removeEventListener();
+            }
         }catch(SerialPortException exc){
             System.out.println("Ошибка завершения работы порта! "+ exc);
             printInConsole("Ошибка завершения работы порта! "+ exc);
@@ -365,7 +373,19 @@ public class SampleController {
     }
 
     public void exitAction(ActionEvent actionEvent) {
+        try {
+            closePorts();
+        } catch (SerialPortException exc) {
+            exc.printStackTrace();
+        } finally {
+            Platform.exit();
+        }
+    }
 
+    public void closePorts() throws SerialPortException{
+        for (int i = 0; i < serialPorts.size(); i++) {
+            shutdownPort(serialPorts.get(i));
+        }
     }
 
     public void deleteAction(ActionEvent actionEvent) {
@@ -386,10 +406,6 @@ public class SampleController {
     public void recieveButtonAction(ActionEvent actionEvent) {
         if (countMessages != 0 && !autoGetMessageFlag)
             getMessage(incomingString);
-    }
-
-    public void autoAnswerAction(ActionEvent actionEvent) {
-
     }
 
     public void openASCIITableWinAction(ActionEvent actionEvent) {
