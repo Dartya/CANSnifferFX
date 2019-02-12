@@ -48,6 +48,24 @@ public class SampleController {
     private static ArrayList<SerialPort> serialPorts = new ArrayList<SerialPort>();
     public ListView consoleListView;
 
+    //objects from new tabs
+    public TextField desctopDataComand;
+    public TextField desctopDataValue;
+    public TextField desctopDataIndex;
+    public TextField desctopDataSubIndex;
+    public Button copyDataButton;
+    public Button saveInDictionaryButton;
+
+    public TextField deviceDataComand;
+    public TextField deviceDataValue;
+    public TextField deviceDataIndex;
+    public TextField deviceDataSubIndex;
+
+    public ListView dictionaryList;
+    public Button loadDictionaryButton;
+    public Button saveDictionaryButton;
+    public CheckBox autoSendFrameButton;
+
     //ArrayLists
     private ArrayList<Integer> baudRates = new ArrayList<Integer>();
     private ArrayList<Integer> stopBits = new ArrayList<Integer>();
@@ -465,6 +483,26 @@ public class SampleController {
 
     public void copyMessageAction(ActionEvent actionEvent) {
         outcomingPacket.setText(generatedTextTextField.getText());
+    }
+
+    public void copyDataAction(ActionEvent actionEvent) {
+
+    }
+
+    public void saveInDictionaryAction(ActionEvent actionEvent) {
+
+    }
+
+    public void loadDictionaryAction(ActionEvent actionEvent) {
+
+    }
+
+    public void saveDictionaryAction(ActionEvent actionEvent) {
+
+    }
+
+    public void autoSendFrameAction(ActionEvent actionEvent) {
+
     }
 
     private class PortReader implements SerialPortEventListener {

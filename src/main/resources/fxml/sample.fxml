@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.*?>
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -14,7 +11,7 @@
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" valignment="TOP" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="265.0" minHeight="265.0" prefHeight="265.0" valignment="CENTER" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="300.0" minHeight="300.0" prefHeight="300.0" valignment="CENTER" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="1.7976931348623157E308" minHeight="200.0" prefHeight="360.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="150.0" minHeight="150.0" prefHeight="200.0" vgrow="SOMETIMES" />
   </rowConstraints>
@@ -23,6 +20,9 @@
         <menus>
           <Menu mnemonicParsing="false" text="Файл">
             <items>
+                  <MenuItem mnemonicParsing="false" onAction="#loadDictionaryAction" text="Загрузить словарь" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveDictionaryAction" text="Сохранить словарь как..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#exitAction" text="Выход" />
             </items>
           </Menu>
@@ -41,164 +41,368 @@
       </MenuBar>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
          <children>
-            <Label text="Исходящий кадр">
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-            </Label>
-            <AnchorPane prefHeight="30.0" prefWidth="200.0">
-               <children>
-                  <TextField fx:id="outcomingPacket" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-               </children>
-            </AnchorPane>
-            <Label text="Входящий кадр">
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" />
-               </VBox.margin>
-            </Label>
-            <AnchorPane prefHeight="30.0" prefWidth="200.0">
-               <children>
-                  <TextField fx:id="incomingPacket" prefHeight="25.0" prefWidth="70.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-               </children>
-            </AnchorPane>
-            <HBox alignment="CENTER" prefHeight="180.0" prefWidth="700.0">
-               <children>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="456.0">
-                     <children>
-                        <HBox alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Кадры">
+                  <content>
+                    <AnchorPane>
                            <children>
-                              <Button fx:id="sendButton" contentDisplay="TOP" mnemonicParsing="false" onAction="#sendButtonAction" prefHeight="25.0" prefWidth="150.0" text="Отправить кадр">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="50.0" right="50.0" />
-                                 </HBox.margin>
-                              </Button>
+                              <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <HBox alignment="CENTER" prefHeight="180.0" prefWidth="700.0">
+                                       <children>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="456.0">
+                                             <children>
+                                                <HBox alignment="CENTER" layoutY="57.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <Label text="Идентификатор">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <TextField fx:id="desktopId" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                         </HBox.margin>
+                                                      </TextField>
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" layoutX="10.0" layoutY="40.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+                                                   <children>
+                                                      <Label text="Длина пакета">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <TextField fx:id="desktopDataSize" HBox.hgrow="ALWAYS">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="17.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </TextField>
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" layoutX="10.0" layoutY="70.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="65.0">
+                                                   <children>
+                                                      <Label text="Данные">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <TextField fx:id="desktopData" HBox.hgrow="ALWAYS">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </TextField>
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="95.0">
+                                                   <children>
+                                                      <Button fx:id="generateMessageButton" mnemonicParsing="false" onAction="#generateMessageAction" text="Сгенерировать">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </Button>
+                                                      <Button fx:id="copyMessageButton" mnemonicParsing="false" onAction="#copyMessageAction" text="Скопировать">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </Button>
+                                                      <TextField fx:id="generatedTextTextField" editable="false" HBox.hgrow="ALWAYS">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </TextField>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </AnchorPane>
+                                          <Separator orientation="VERTICAL" prefHeight="200.0" />
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="458.0">
+                                             <children>
+                                                <HBox alignment="CENTER" layoutY="57.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                                                   <children>
+                                                      <Label text="Идентификатор">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <TextField fx:id="deviceId" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </TextField>
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" layoutX="10.0" layoutY="40.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+                                                   <children>
+                                                      <Label text="Длина пакета">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <TextField fx:id="deviceDataSize" editable="false" HBox.hgrow="SOMETIMES">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </TextField>
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" layoutX="10.0" layoutY="70.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="65.0">
+                                                   <children>
+                                                      <Label text="Данные">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <TextField fx:id="deviceData" editable="false" HBox.hgrow="SOMETIMES">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </TextField>
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="95.0">
+                                                   <children>
+                                                      <CheckBox fx:id="autoAnswerCheckBox" mnemonicParsing="false" text="Автоматический прием кадров" HBox.hgrow="ALWAYS">
+                                                         <HBox.margin>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                         </HBox.margin>
+                                                      </CheckBox>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
                            </children>
-                        </HBox>
-                        <HBox alignment="CENTER" layoutY="57.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                  <Tab text="Данные">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <Label text="Идентификатор">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="desktopId" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children></HBox>
-                        <HBox alignment="CENTER" layoutX="10.0" layoutY="40.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+                              <HBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="346.0" HBox.hgrow="NEVER">
+                                       <children>
+                                          <Label text="Генерация данных">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <HBox minHeight="30.0" prefHeight="30.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Команда">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="desctopDataComand" alignment="CENTER" prefWidth="70.0">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </TextField>
+                                                <Label text="Значение">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="desctopDataValue" alignment="CENTER" prefHeight="25.0" prefWidth="115.0">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </TextField>
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Индекс">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="13.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="desctopDataIndex" alignment="CENTER" prefWidth="70.0">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </TextField>
+                                                <Label text="Сабиндекс">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="3.0" right="3.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="desctopDataSubIndex" alignment="CENTER" prefWidth="70.0">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="3.0" />
+                                                   </HBox.margin>
+                                                </TextField>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" minHeight="30.0" prefHeight="30.0" prefWidth="200.0">
+                                             <children>
+                                                <Button fx:id="copyDataButton" mnemonicParsing="false" onAction="#copyDataAction" text="Скопировать в данные кадра">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button fx:id="saveInDictionaryButton" mnemonicParsing="false" onAction="#saveInDictionaryAction" text="Сохранить в словаре">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <Separator orientation="VERTICAL" />
+                                    <VBox alignment="CENTER" prefHeight="121.0" prefWidth="348.0">
+                                       <children>
+                                          <Label text="Разбор данных">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <HBox minHeight="30.0" prefHeight="30.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Команда">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="deviceDataComand" alignment="CENTER" prefWidth="70.0">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </TextField>
+                                                <Label text="Значение">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="deviceDataValue" alignment="CENTER" prefHeight="25.0" prefWidth="115.0">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </TextField>
+                                             </children>
+                                          </HBox>
+                                          <HBox minHeight="30.0" prefHeight="30.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Индекс">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="13.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="deviceDataSubIndex" alignment="CENTER" prefWidth="70.0">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </TextField>
+                                                <Label text="Сабиндекс">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="3.0" right="3.0" top="5.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="deviceDataIndex" alignment="CENTER" prefWidth="70.0">
+                                                   <HBox.margin>
+                                                      <Insets bottom="5.0" left="3.0" right="5.0" />
+                                                   </HBox.margin>
+                                                </TextField>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab text="Словарь">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <Label text="Длина пакета">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="desktopDataSize" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="17.0" right="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children></HBox>
-                        <HBox alignment="CENTER" layoutX="10.0" layoutY="70.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
-                           <children>
-                              <Label text="Данные">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="desktopData" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children></HBox>
-                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0">
-                           <children>
-                              <Button fx:id="generateMessageButton" mnemonicParsing="false" onAction="#generateMessageAction" text="Сгенерировать">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="copyMessageButton" mnemonicParsing="false" onAction="#copyMessageAction" text="Скопировать">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <TextField fx:id="generatedTextTextField" editable="false" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children></HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ListView fx:id="dictionaryList" minWidth="500.0">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </ListView>
+                                    <VBox alignment="TOP_CENTER" minWidth="185.0" prefHeight="200.0" prefWidth="185.0">
+                                       <children>
+                                          <Button fx:id="loadDictionaryButton" mnemonicParsing="false" onAction="#loadDictionaryAction" text="Загрузить">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                          </Button>
+                                          <Button fx:id="saveDictionaryButton" mnemonicParsing="false" onAction="#saveDictionaryAction" text="Сохранить как...">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" />
+                                             </VBox.margin>
+                                          </Button>
+                                          <CheckBox fx:id="autoSendFrameButton" mnemonicParsing="false" onAction="#autoSendFrameAction" text="Автоотправка кадров">
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="25.0" />
+                                             </VBox.margin>
+                                          </CheckBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Separator prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </VBox.margin>
+                  </Separator>
+                  <Label text="Исходящий кадр">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <AnchorPane prefHeight="30.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="outcomingPacket" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
                      </children>
                   </AnchorPane>
-                  <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="458.0">
+                  <Label text="Входящий кадр">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <AnchorPane prefHeight="30.0" prefWidth="200.0">
                      <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <Button fx:id="recieveButton" mnemonicParsing="false" onAction="#recieveButtonAction" prefWidth="150.0" text="Принять кадр">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="50.0" right="50.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" layoutY="57.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
-                           <children>
-                              <Label text="Идентификатор">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="deviceId" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" layoutX="10.0" layoutY="40.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
-                           <children>
-                              <Label text="Длина пакета">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="deviceDataSize" editable="false" HBox.hgrow="SOMETIMES">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" layoutX="10.0" layoutY="70.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
-                           <children>
-                              <Label text="Данные">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <TextField fx:id="deviceData" editable="false" HBox.hgrow="SOMETIMES">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </TextField>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" layoutX="20.0" layoutY="80.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="120.0">
-                           <children>
-                              <CheckBox fx:id="autoAnswerCheckBox" mnemonicParsing="false" text="Автоматический прием кадров" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" />
-                                 </HBox.margin>
-                              </CheckBox>
-                           </children></HBox>
+                        <TextField fx:id="incomingPacket" prefHeight="25.0" prefWidth="70.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
                      </children>
                   </AnchorPane>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="346.0">
+                     <children>
+                        <Button fx:id="sendButton" contentDisplay="TOP" mnemonicParsing="false" onAction="#sendButtonAction" prefHeight="25.0" prefWidth="150.0" text="Отправить кадр">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="recieveButton" mnemonicParsing="false" onAction="#recieveButtonAction" prefWidth="150.0" text="Принять кадр">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
-            </HBox>
+            </VBox>
          </children>
       </VBox>
       <SplitPane dividerPositions="0.4956395348837209" prefHeight="160.0" prefWidth="200.0" GridPane.rowIndex="2">
@@ -218,7 +422,7 @@
             <Insets />
          </opaqueInsets>
          <GridPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" />
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </GridPane.margin>
       </SplitPane>
       <VBox alignment="TOP_CENTER" GridPane.rowIndex="3">
