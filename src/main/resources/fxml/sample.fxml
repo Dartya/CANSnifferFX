@@ -248,11 +248,6 @@
                                                       <Insets bottom="5.0" left="5.0" right="5.0" />
                                                    </HBox.margin>
                                                 </Button>
-                                                <Button fx:id="saveInDictionaryButton" mnemonicParsing="false" onAction="#saveInDictionaryAction" text="Сохранить в словаре">
-                                                   <HBox.margin>
-                                                      <Insets bottom="5.0" left="5.0" right="5.0" />
-                                                   </HBox.margin>
-                                                </Button>
                                              </children>
                                           </HBox>
                                        </children>
@@ -326,34 +321,36 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <ListView fx:id="dictionaryList" minWidth="500.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="5.0">
+                                 <contextMenu>
+                                    <ContextMenu>
+                                      <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#makeOutcomingPacket" text="Скопировать в исходящий кадр" />
+                                          <SeparatorMenuItem mnemonicParsing="false" />
+                                        <MenuItem mnemonicParsing="false" onAction="#deleteSelected" text="Удалить" />
+                                      </items>
+                                    </ContextMenu>
+                                 </contextMenu>
+                              </ListView>
+                              <VBox alignment="TOP_CENTER" minWidth="185.0" prefHeight="200.0" prefWidth="185.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <ListView fx:id="dictionaryList" minWidth="500.0">
-                                       <HBox.margin>
+                                    <Button fx:id="loadDictionaryButton" mnemonicParsing="false" onAction="#loadDictionaryAction" text="Загрузить">
+                                       <VBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </HBox.margin>
-                                    </ListView>
-                                    <VBox alignment="TOP_CENTER" minWidth="185.0" prefHeight="200.0" prefWidth="185.0">
-                                       <children>
-                                          <Button fx:id="loadDictionaryButton" mnemonicParsing="false" onAction="#loadDictionaryAction" text="Загрузить">
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                             </VBox.margin>
-                                          </Button>
-                                          <Button fx:id="saveDictionaryButton" mnemonicParsing="false" onAction="#saveDictionaryAction" text="Сохранить как...">
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" />
-                                             </VBox.margin>
-                                          </Button>
-                                          <CheckBox fx:id="autoSendFrameButton" mnemonicParsing="false" onAction="#autoSendFrameAction" text="Автоотправка кадров">
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="25.0" />
-                                             </VBox.margin>
-                                          </CheckBox>
-                                       </children>
-                                    </VBox>
+                                       </VBox.margin>
+                                    </Button>
+                                    <Button fx:id="saveDictionaryButton" mnemonicParsing="false" onAction="#saveDictionaryAction" text="Сохранить как...">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" />
+                                       </VBox.margin>
+                                    </Button>
+                                    <CheckBox fx:id="autoSendFrameButton" mnemonicParsing="false" onAction="#autoSendFrameAction" text="Автоотправка кадров">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="25.0" />
+                                       </VBox.margin>
+                                    </CheckBox>
                                  </children>
-                              </HBox>
+                              </VBox>
                            </children>
                         </AnchorPane>
                     </content>
@@ -374,7 +371,8 @@
                   </Label>
                   <AnchorPane prefHeight="30.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="outcomingPacket" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                        <TextField fx:id="outcomingPacket" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="145.0" />
+                        <Button fx:id="saveInDictionaryButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#saveInDictionaryAction" text="Сохранить в словаре" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                   <Label text="Входящий кадр">
@@ -384,7 +382,8 @@
                   </Label>
                   <AnchorPane prefHeight="30.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="incomingPacket" prefHeight="25.0" prefWidth="70.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                        <TextField fx:id="incomingPacket" prefHeight="25.0" prefWidth="70.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="145.0" />
+                        <Button fx:id="saveInDictionaryButton2" mnemonicParsing="false" onAction="#saveInDictionaryAction2" text="Сохранить в словаре" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                   <HBox alignment="CENTER" prefHeight="30.0" prefWidth="346.0">

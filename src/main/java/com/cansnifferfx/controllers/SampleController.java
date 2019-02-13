@@ -1,5 +1,6 @@
 package com.cansnifferfx.controllers;
 
+import com.cansnifferfx.models.AutoSendFrameThread;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -57,6 +58,7 @@ public class SampleController {
     public TextField desctopDataSubIndex;
     public Button copyDataButton;
     public Button saveInDictionaryButton;
+    public Button saveInDictionaryButton2;
 
     public TextField deviceDataComand;
     public TextField deviceDataValue;
@@ -93,6 +95,10 @@ public class SampleController {
 
     //флаги
     private static boolean autoGetMessageFlag = false;
+    private boolean isFirstAutoSend = true;
+
+    //потоки
+    AutoSendFrameThread autoSendFrameThread;
 
     public void initialize() {
 
@@ -217,7 +223,7 @@ public class SampleController {
         });
 
         //поток автоотправки пакетов
-
+        autoSendFrameThread = new AutoSendFrameThread("asend", dictionaryObservList);
     }
 
     private void printInConsole(String message){
@@ -503,6 +509,10 @@ public class SampleController {
         dictionaryObservList.add(outcomingPacket.getText());
     }
 
+    public void saveInDictionaryAction2(ActionEvent actionEvent) {
+        dictionaryObservList.add(incomingPacket.getText());
+    }
+
     public void loadDictionaryAction(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
 
@@ -574,7 +584,19 @@ public class SampleController {
     }
 
     public void autoSendFrameAction(ActionEvent actionEvent) {
+        if (autoGetMessageFlag == true){
+            autoSendFrameThread.start();
+        } else
+            autoSendFrameThread.interrupt();
 
+    }
+
+    public void makeOutcomingPacket(ActionEvent actionEvent) {
+        outcomingPacket.setText(dictionaryObservList.get(dictionaryList.getSelectionModel().getSelectedIndex()));
+    }
+
+    public void deleteSelected(ActionEvent actionEvent) {
+        dictionaryObservList.remove(dictionaryObservList.get(dictionaryList.getSelectionModel().getSelectedIndex()));
     }
 
     private class PortReader implements SerialPortEventListener {
