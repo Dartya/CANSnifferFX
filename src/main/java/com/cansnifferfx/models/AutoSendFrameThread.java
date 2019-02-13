@@ -1,6 +1,8 @@
 package com.cansnifferfx.models;
 
+import com.cansnifferfx.controllers.SampleController;
 import javafx.collections.ObservableList;
+import jssc.SerialPort;
 
 public class AutoSendFrameThread extends Thread {
 
@@ -8,11 +10,14 @@ public class AutoSendFrameThread extends Thread {
         super(name);
         this.list = list;
         listSize = list.size();
+        System.out.println(name+" has been made!");
     }
 
     private int index = 0;
     private int listSize;
     ObservableList<String> list;
+    SampleController controller;
+    SerialPort serialPort;
 
     public ObservableList<String> getList() {
         return list;
@@ -24,17 +29,11 @@ public class AutoSendFrameThread extends Thread {
         listSize = list.size();
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
     public void run(){
         while (index < listSize){
-            //послать в порт list.get(index); // для этого нужно инкапсулировать метод отправки пакета
+            //послать в порт
+            System.out.println("sending frame №"+index+"...");
+            Messages.sendMessage(controller, list.get(index), serialPort);
             index++;
             if (index == listSize)
                 index = 0;

@@ -1,6 +1,7 @@
 package com.cansnifferfx.controllers;
 
 import com.cansnifferfx.models.AutoSendFrameThread;
+import com.cansnifferfx.models.Messages;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -81,8 +82,8 @@ public class SampleController {
     private ObservableList<Integer> comStopBitsObserList = FXCollections.observableArrayList();
     private ObservableList<Integer> comParityObserList = FXCollections.observableArrayList();
     private ObservableList<String> incomingMessages = FXCollections.observableArrayList();
-    private ObservableList<String> outgoingMessages = FXCollections.observableArrayList();
-    private ObservableList<String> consoleMessages = FXCollections.observableArrayList();
+    public ObservableList<String> outgoingMessages = FXCollections.observableArrayList();
+    public ObservableList<String> consoleMessages = FXCollections.observableArrayList();
     private ObservableList<String> dictionaryObservList = FXCollections.observableArrayList();
 
     //строки
@@ -112,9 +113,9 @@ public class SampleController {
         //проверка на факт отсутствия доступных ком-портов
         if (portNames.length == 0) {
             System.out.println("Не найдено ни одного доступного ком-порта.");
-            printInConsole("Не найдено ни одного доступного ком-порта.");
+            Messages.printInConsole(this, "Не найдено ни одного доступного ком-порта.");
             System.out.println("Нажмите Enter для выхода...");
-            printInConsole("Нажмите Enter для выхода...");
+            Messages.printInConsole(this, "Нажмите Enter для выхода...");
             try {
                 System.in.read();
             } catch (IOException e) {
@@ -185,12 +186,13 @@ public class SampleController {
         });
 
         //слушатель изменения ком-порта
+        final SampleController sampleController = this;
         portNumberCB.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 System.out.println("Старый порт: "+portNames[(Integer)oldValue]);
-                printInConsole("Старый порт: "+portNames[(Integer)oldValue]);
+                Messages.printInConsole( sampleController,"Старый порт: "+portNames[(Integer)oldValue]);
                 System.out.println("Новый порт: "+portNames[(Integer)newValue]);
-                printInConsole("Новый порт: "+portNames[(Integer)newValue]);
+                Messages.printInConsole(sampleController,"Новый порт: "+portNames[(Integer)newValue]);
 
                 //закрываем старый порт и удаляем его листенер
                 shutdownPort(serialPorts.get((Integer)oldValue));
@@ -225,14 +227,14 @@ public class SampleController {
         //поток автоотправки пакетов
         autoSendFrameThread = new AutoSendFrameThread("asend", dictionaryObservList);
     }
-
-    private void printInConsole(String message){
+/*
+    public void printInConsole(String message){
         Date date = new Date();
-        message = date.toString()+": "+message;
+        message = date.getTime()+": "+message;
         consoleMessages.add(message);
         consoleListView.scrollTo(consoleMessages.size());
     }
-
+*/
     private void initComBaudRates(){   //метод инициализации листа скоростей настраиваемого порта
         baudRates.add(SerialPort.BAUDRATE_9600);
         baudRates.add(SerialPort.BAUDRATE_19200);
@@ -268,7 +270,7 @@ public class SampleController {
             serialPort.addEventListener(new PortReader(this), SerialPort.MASK_RXCHAR);
         } catch (SerialPortException exc){
             System.out.println("Ошибка инициализации порта! "+ exc);
-            printInConsole("Ошибка инициализации порта! "+ exc);
+            Messages.printInConsole(this,"Ошибка инициализации порта! "+ exc);
         }
     }
 
@@ -281,7 +283,7 @@ public class SampleController {
 
         }catch(Exception exc){
             System.out.println("Не удалось применить новые настройки ком-порта! "+ exc);
-            printInConsole("Не удалось применить новые настройки ком-порта! "+ exc);
+            Messages.printInConsole(this,"Не удалось применить новые настройки ком-порта! "+ exc);
         }
     }
     //метод обновления параметров ком-порта, первая реализация - без параметра
@@ -307,28 +309,28 @@ public class SampleController {
             }
         }catch(SerialPortException exc){
             System.out.println("Ошибка завершения работы порта! "+ exc);
-            printInConsole("Ошибка завершения работы порта! "+ exc);
+            Messages.printInConsole(this,"Ошибка завершения работы порта! "+ exc);
         }
     }
 
     private void sendMessage(String message){
         System.out.println("Попытка отправки сообщения \""+message+"\":");
-        printInConsole("Попытка отправки сообщения \""+message+"\":");
+        Messages.printInConsole(this,"Попытка отправки сообщения \""+message+"\":");
         message = message + (char)13;   //(char)13 = 0Dh - возврат каретки в ASCII
         try{
-            printStringHexCodes(message);
+            Messages.printStringHexCodes(this, message);
             boolean isSucceed = serialPort.writeString(message);
             if (isSucceed == true) {
                 System.out.println("Отправка успешна.");
-                printInConsole("Отправка успешна");
+                Messages.printInConsole(this,"Отправка успешна");
             }
             else {
                 System.out.println("Отправка не удалась. Проверьте правильность подключения COM-порта.");
-                printInConsole("Отправка не удалась. Проверьте правильность подключения COM-порта.");
+                Messages.printInConsole(this,"Отправка не удалась. Проверьте правильность подключения COM-порта.");
             }
         } catch (Exception exc){
             System.out.println("Ошибка передачи сообщения! "+ exc);
-            printInConsole("Ошибка передачи сообщения! "+ exc);
+            Messages.printInConsole(this,"Ошибка передачи сообщения! "+ exc);
         }
         //работаем с вьюхами окна:
         String strbuf = "";
@@ -388,7 +390,7 @@ public class SampleController {
             savedIncomingString = incomingString;
         }
     }
-
+/*
     public void printStringHexCodes(String message){
         byte[] buffer = message.getBytes();
         System.out.print("Массив байт: ");
@@ -405,7 +407,7 @@ public class SampleController {
         }
         printInConsole(mes);
     }
-
+*/
     public void exitAction(ActionEvent actionEvent) {
         try {
             closePorts();
@@ -442,28 +444,6 @@ public class SampleController {
             getMessage(incomingString);
     }
 
-    public void openASCIITableWinAction(ActionEvent actionEvent) {
-        try {
-            Stage aboutstage = new Stage();
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/fxml/asciiWin.fxml"));
-            Parent root = loader.load();
-            aboutstage.setTitle("Таблица символов ASCII");
-            aboutstage.setMinHeight(500);
-            aboutstage.setMinWidth(700);
-            aboutstage.setResizable(false);
-            aboutstage.setScene(new Scene(root));
-            aboutstage.initModality(Modality.APPLICATION_MODAL);
-            //stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());    //указывается родительское окно
-            //правда, данный метод инициализации родительского окна не работает с элеменами основного меню, поэтому
-            aboutstage.show();         //не используется в связке с stage.initModality(Modality.WINDOW_MODAL);
-            //aboutstage.showAndWait();    //зато используется этот метод в связке с stage.initModality(Modality.APPLICATION_MODAL);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void generateMessageAction(ActionEvent actionEvent) {
         if (!(desktopId.getText().equals("") || desktopDataSize.getText().equals("") || desktopData.getText().equals("")))
         {
@@ -494,6 +474,28 @@ public class SampleController {
             strresult = strresult+strbuf;
 
             generatedTextTextField.setText(strresult);
+        }
+    }
+
+    public void openASCIITableWinAction(ActionEvent actionEvent) {
+        try {
+            Stage aboutstage = new Stage();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/asciiWin.fxml"));
+            Parent root = loader.load();
+            aboutstage.setTitle("Таблица символов ASCII");
+            aboutstage.setMinHeight(500);
+            aboutstage.setMinWidth(700);
+            aboutstage.setResizable(false);
+            aboutstage.setScene(new Scene(root));
+            aboutstage.initModality(Modality.APPLICATION_MODAL);
+            //stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());    //указывается родительское окно
+            //правда, данный метод инициализации родительского окна не работает с элеменами основного меню, поэтому
+            aboutstage.show();         //не используется в связке с stage.initModality(Modality.WINDOW_MODAL);
+            //aboutstage.showAndWait();    //зато используется этот метод в связке с stage.initModality(Modality.APPLICATION_MODAL);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -584,11 +586,20 @@ public class SampleController {
     }
 
     public void autoSendFrameAction(ActionEvent actionEvent) {
-        if (autoGetMessageFlag == true){
-            autoSendFrameThread.start();
-        } else
-            autoSendFrameThread.interrupt();
+        System.out.println("autosending is "+autoSendFrameButton.isSelected());
 
+        if ((autoSendFrameButton.isSelected() == true) && (isFirstAutoSend == true)){
+            autoSendFrameThread.start();
+            isFirstAutoSend = false;
+        } else if ((autoSendFrameButton.isSelected() == true) && (isFirstAutoSend == false)){
+            autoSendFrameThread.notify();
+        }
+        else
+            try{
+                autoSendFrameThread.wait();
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
     }
 
     public void makeOutcomingPacket(ActionEvent actionEvent) {
@@ -645,7 +656,7 @@ public class SampleController {
                 final String finMessage = message;
                 Platform.runLater(new Runnable() {
                     public void run() {
-                        printInConsole(finMessage);
+                        Messages.printInConsole(sampleController, finMessage);
                     }
                 });
             }
