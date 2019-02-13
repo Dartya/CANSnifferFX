@@ -10,14 +10,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jssc.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SampleController {
     //FXML Views
@@ -79,6 +81,7 @@ public class SampleController {
     private ObservableList<String> incomingMessages = FXCollections.observableArrayList();
     private ObservableList<String> outgoingMessages = FXCollections.observableArrayList();
     private ObservableList<String> consoleMessages = FXCollections.observableArrayList();
+    private ObservableList<String> dictionaryObservList = FXCollections.observableArrayList();
 
     //строки
     private static String incomingString;
@@ -161,6 +164,10 @@ public class SampleController {
         consoleListView.setItems(consoleMessages);
         consoleListView.setFixedCellSize(25);
 
+        //инициализация словаря
+        dictionaryList.setItems(dictionaryObservList);
+        dictionaryList.setFixedCellSize(25);
+
         //подключаем листенер чекбаттона автозаполнения
         autoGetMessageFlag = autoAnswerCheckBox.isSelected();
         autoAnswerCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -208,6 +215,9 @@ public class SampleController {
                 updatePortParams();
             }
         });
+
+        //поток автоотправки пакетов
+
     }
 
     private void printInConsole(String message){
@@ -490,15 +500,77 @@ public class SampleController {
     }
 
     public void saveInDictionaryAction(ActionEvent actionEvent) {
-
+        dictionaryObservList.add(outcomingPacket.getText());
     }
 
     public void loadDictionaryAction(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
 
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show save file dialog
+        File file = fileChooser.showOpenDialog(null);
+        if(file != null){
+            //textAreaOne.setText(readFile(file));
+            readFile(dictionaryObservList, file);
+        }
+    }
+
+    private String readFile(ObservableList<String> list, File file){
+
+        StringBuilder stringBuffer = new StringBuilder();
+        BufferedReader bufferedReader = null;
+
+        try {
+            bufferedReader = new BufferedReader(new FileReader(file));
+
+            String text;
+            dictionaryObservList.clear();
+            while ((text = bufferedReader.readLine()) != null) {
+                list.add(text);
+            }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SampleController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SampleController.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                bufferedReader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SampleController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return stringBuffer.toString();
     }
 
     public void saveDictionaryAction(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
 
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilter =
+                new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(null);
+        if(file != null){
+            SaveFile(dictionaryObservList, file);
+        }
+    }
+
+    private void SaveFile(ObservableList<String> list, File file){
+        try{
+            FileWriter fileWriter = new FileWriter(file);
+
+            for (int i = 0; i < list.size(); i++) {
+                fileWriter.write(list.get(i)+"\r\n");
+            }
+            fileWriter.close();
+        }catch (Exception exc){
+            Logger.getLogger(SampleController.class.getName()).log(Level.SEVERE, null, exc);
+        }
     }
 
     public void autoSendFrameAction(ActionEvent actionEvent) {
