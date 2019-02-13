@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.input.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -327,7 +328,10 @@
                                       <items>
                                           <MenuItem mnemonicParsing="false" onAction="#makeOutcomingPacket" text="Скопировать в исходящий кадр" />
                                           <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem mnemonicParsing="false" onAction="#deleteSelected" text="Удалить" />
+                                        <MenuItem mnemonicParsing="false" onAction="#deleteSelected" text="Удалить">
+                                             <accelerator>
+                                                <KeyCodeCombination alt="ANY" code="DELETE" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                                             </accelerator></MenuItem>
                                       </items>
                                     </ContextMenu>
                                  </contextMenu>

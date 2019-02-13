@@ -185,6 +185,19 @@ public class SampleController {
             }
         });
 
+        //слушатели листов сообщений
+        consoleListView.selectionModelProperty().addListener(new ChangeListener() {
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                consoleListView.scrollTo(consoleMessages.size());
+            }
+        });
+
+        sendedPacketsList.selectionModelProperty().addListener(new ChangeListener() {
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                sendedPacketsList.scrollTo(outgoingMessages.size());
+            }
+        });
+
         //слушатель изменения ком-порта
         final SampleController sampleController = this;
         portNumberCB.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -225,7 +238,8 @@ public class SampleController {
         });
 
         //поток автоотправки пакетов
-        autoSendFrameThread = new AutoSendFrameThread("asend", dictionaryObservList);
+        autoSendFrameThread = new AutoSendFrameThread("asend", dictionaryObservList, serialPort, this);
+        autoSendFrameThread.start();
     }
 /*
     public void printInConsole(String message){
@@ -586,20 +600,13 @@ public class SampleController {
     }
 
     public void autoSendFrameAction(ActionEvent actionEvent) {
-        System.out.println("autosending is "+autoSendFrameButton.isSelected());
+        System.out.println("autosending is " + autoSendFrameButton.isSelected());
 
-        if ((autoSendFrameButton.isSelected() == true) && (isFirstAutoSend == true)){
-            autoSendFrameThread.start();
-            isFirstAutoSend = false;
-        } else if ((autoSendFrameButton.isSelected() == true) && (isFirstAutoSend == false)){
-            autoSendFrameThread.notify();
-        }
-        else
-            try{
-                autoSendFrameThread.wait();
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
+        if (autoSendFrameButton.isSelected() == true) {
+            autoSendFrameThread.setList(dictionaryObservList);
+            autoSendFrameThread.setSendOn(true);
+        }else
+                autoSendFrameThread.setSendOn(false);
     }
 
     public void makeOutcomingPacket(ActionEvent actionEvent) {

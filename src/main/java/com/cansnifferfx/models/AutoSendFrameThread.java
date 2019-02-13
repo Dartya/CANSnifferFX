@@ -6,10 +6,12 @@ import jssc.SerialPort;
 
 public class AutoSendFrameThread extends Thread {
 
-    public AutoSendFrameThread(String name, ObservableList<String> list){
+    public AutoSendFrameThread(String name, ObservableList<String> list, SerialPort serialPort, SampleController controller){
         super(name);
         this.list = list;
         listSize = list.size();
+        this.serialPort = serialPort;
+        this.controller = controller;
         System.out.println(name+" has been made!");
     }
 
@@ -18,6 +20,17 @@ public class AutoSendFrameThread extends Thread {
     ObservableList<String> list;
     SampleController controller;
     SerialPort serialPort;
+    private boolean sendOn = false;
+    private boolean flag = true;
+    private long cicle = 0;
+
+    public boolean isSendOn() {
+        return sendOn;
+    }
+
+    public void setSendOn(boolean sendOn) {
+        this.sendOn = sendOn;
+    }
 
     public ObservableList<String> getList() {
         return list;
@@ -29,14 +42,30 @@ public class AutoSendFrameThread extends Thread {
         listSize = list.size();
     }
 
-    public void run(){
-        while (index < listSize){
-            //послать в порт
-            System.out.println("sending frame №"+index+"...");
-            Messages.sendMessage(controller, list.get(index), serialPort);
-            index++;
-            if (index == listSize)
-                index = 0;
+    @Override
+    public void run() {
+
+        while (flag) {
+            System.out.println("Метод run() потока "+this.getName()+", цикл "+cicle+", индекс "+index+", listsize "+listSize);
+            if (sendOn) {
+                while (index < listSize) {
+                    //послать в порт
+                    System.out.println("sending frame №" + index + "...");
+                    System.out.println(controller.toString());
+                    System.out.println(list.get(index));
+                    System.out.println(serialPort.getPortName());
+                    Messages.sendMessage(controller, list.get(index), serialPort);
+                    try{
+                        Thread.sleep(100 );		//Приостановка потока на 1 сек.
+                    }catch(InterruptedException e){
+                        System.out.println(e.toString());
+                    }
+                    index++;
+                    if (index == listSize)
+                        index = 0;
+                }
+            }
+            cicle++;
         }
     }
 }

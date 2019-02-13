@@ -48,16 +48,24 @@ public class Messages {
 
         //автоматическая прокрутка до последнего сообщения
         controller.outgoingMessages.add(message);
-        controller.sendedPacketsList.scrollTo(controller.outgoingMessages.size());
+        //controller.sendedPacketsList.scrollTo(controller.outgoingMessages.size());
 
         System.out.println("Send success!");
     }
 
     public static void printInConsole(SampleController controller, String message){
         Date date = new Date();
-        message = date.getTime()+": "+message;
-        controller.consoleMessages.add(message);
-        controller.consoleListView.scrollTo(controller.consoleMessages.size());
+        message = date.toString()+": "+message;
+        try{
+            controller.consoleMessages.add(message);
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }/* ДОЛЖНО БЫТЬ В FXApplication Thread!
+        try{
+            controller.consoleListView.scrollTo(controller.consoleMessages.size());
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }*/
     }
 
     public static void printStringHexCodes(SampleController controller, String message){
