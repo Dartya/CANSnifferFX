@@ -30,6 +30,7 @@
           <Menu mnemonicParsing="false" text="Терминал">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#deleteAction" text="Очистить" />
+                  <CheckMenuItem fx:id="autoScrollMenuItem" mnemonicParsing="false" onAction="#autoscrollAction" text="Автопрокрутка" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Справка">

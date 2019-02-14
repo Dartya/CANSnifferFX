@@ -44,26 +44,20 @@ public class AutoSendFrameThread extends Thread {
 
     @Override
     public void run() {
-
         while (flag) {
             System.out.println("Метод run() потока "+this.getName()+", цикл "+cicle+", индекс "+index+", listsize "+listSize);
             if (sendOn) {
-                while (index < listSize) {
-                    //послать в порт
-                    System.out.println("sending frame №" + index + "...");
-                    System.out.println(controller.toString());
-                    System.out.println(list.get(index));
-                    System.out.println(serialPort.getPortName());
-                    Messages.sendMessage(controller, list.get(index), serialPort);
-                    try{
-                        Thread.sleep(100 );		//Приостановка потока на 1 сек.
-                    }catch(InterruptedException e){
-                        System.out.println(e.toString());
-                    }
-                    index++;
-                    if (index == listSize)
-                        index = 0;
+                //послать в порт
+                System.out.println("sending frame №" + index + "...");
+                Messages.sendMessage(controller, list.get(index), serialPort);
+                try{
+                    Thread.sleep(100 );		//Приостановка потока на 1 сек.
+                }catch(InterruptedException e){
+                    System.out.println(e.toString());
                 }
+                index++;
+                if (index == listSize)
+                    index = 0;
             }
             cicle++;
         }

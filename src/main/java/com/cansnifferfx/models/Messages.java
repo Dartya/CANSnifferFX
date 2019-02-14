@@ -1,6 +1,7 @@
 package com.cansnifferfx.models;
 
 import com.cansnifferfx.controllers.SampleController;
+import javafx.application.Platform;
 import jssc.SerialPort;
 
 import java.util.Date;
@@ -47,7 +48,11 @@ public class Messages {
         }
 
         //автоматическая прокрутка до последнего сообщения
-        controller.outgoingMessages.add(message);
+        try {
+            controller.outgoingMessages.add(message);
+        }catch(IllegalStateException e) {
+            System.out.println(e.toString());
+        }
         //controller.sendedPacketsList.scrollTo(controller.outgoingMessages.size());
 
         System.out.println("Send success!");

@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -70,6 +71,7 @@ public class SampleController {
     public Button loadDictionaryButton;
     public Button saveDictionaryButton;
     public CheckBox autoSendFrameButton;
+    public CheckMenuItem autoScrollMenuItem;
 
     //ArrayLists
     private ArrayList<Integer> baudRates = new ArrayList<Integer>();
@@ -182,19 +184,6 @@ public class SampleController {
                 autoGetMessageFlag = newValue; //присваиваем переменной новое значение чекбаттона
                 if (oldValue == true && newValue == false)
                     callsOfGetMessageMethod = countMessages;
-            }
-        });
-
-        //слушатели листов сообщений
-        consoleListView.selectionModelProperty().addListener(new ChangeListener() {
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                consoleListView.scrollTo(consoleMessages.size());
-            }
-        });
-
-        sendedPacketsList.selectionModelProperty().addListener(new ChangeListener() {
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                sendedPacketsList.scrollTo(outgoingMessages.size());
             }
         });
 
@@ -606,7 +595,7 @@ public class SampleController {
             autoSendFrameThread.setList(dictionaryObservList);
             autoSendFrameThread.setSendOn(true);
         }else
-                autoSendFrameThread.setSendOn(false);
+            autoSendFrameThread.setSendOn(false);
     }
 
     public void makeOutcomingPacket(ActionEvent actionEvent) {
@@ -615,6 +604,39 @@ public class SampleController {
 
     public void deleteSelected(ActionEvent actionEvent) {
         dictionaryObservList.remove(dictionaryObservList.get(dictionaryList.getSelectionModel().getSelectedIndex()));
+    }
+
+    public void autoscrollAction(ActionEvent actionEvent) {
+        if (autoScrollMenuItem.isSelected()) {
+            //слушатели листов сообщений
+            consoleListView.scrollTo(consoleMessages.size());
+            consoleListView.selectionModelProperty().addListener(new ChangeListener() {
+                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                    consoleListView.scrollTo(consoleMessages.size());
+                }
+            });
+            sendedPacketsList.scrollTo(outgoingMessages.size());
+            sendedPacketsList.selectionModelProperty().addListener(new ChangeListener() {
+                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                    sendedPacketsList.scrollTo(outgoingMessages.size());
+                }
+            });
+        } else {
+
+        }
+
+        /*
+        consoleListView.getItems().addListener(new ListChangeListener() {
+            public void onChanged(Change c) {
+                consoleListView.scrollTo(consoleMessages.size());
+            }
+        });
+
+        sendedPacketsList.getItems().addListener(new ListChangeListener() {
+            public void onChanged(Change c) {
+                sendedPacketsList.scrollTo(outgoingMessages.size());
+            }
+        });*/
     }
 
     private class PortReader implements SerialPortEventListener {
