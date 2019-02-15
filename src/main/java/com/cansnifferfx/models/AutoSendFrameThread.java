@@ -29,6 +29,10 @@ public class AutoSendFrameThread extends Thread {
         return sendOn;
     }
 
+    public void setFlag(boolean newvalue){
+        this.flag = newvalue;
+    }
+
     public void setSendOn(boolean sendOn) {
         this.sendOn = sendOn;
     }

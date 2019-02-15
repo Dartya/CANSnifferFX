@@ -30,6 +30,7 @@ public class Main extends Application {
         this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent event) {
                 try{
+                    mainController.stopThread();
                     mainController.closePorts();
                 }catch (SerialPortException exc) {
                     System.out.println(exc);

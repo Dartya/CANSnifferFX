@@ -20,11 +20,14 @@ import javafx.stage.Stage;
 import jssc.*;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SampleController {
     //FXML Views
@@ -244,6 +247,15 @@ public class SampleController {
             }
         });
 
+        //слушатели текстфилдов
+        desctopDataValue.textProperty().addListener(new ChangeListener<String>() {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*(\\.\\d*)?")) {
+                    desctopDataValue.setText(oldValue);
+                }
+            }
+        });
+
         //поток автоотправки пакетов
         autoSendFrameThread = new AutoSendFrameThread("asend", dictionaryObservList, serialPort, this);
         autoSendFrameThread.start();
@@ -435,8 +447,14 @@ public class SampleController {
         } catch (SerialPortException exc) {
             exc.printStackTrace();
         } finally {
+            stopThread();
             Platform.exit();
+
         }
+    }
+
+    public void stopThread(){
+        autoSendFrameThread.setFlag(false);
     }
 
     public void closePorts() throws SerialPortException{
@@ -477,7 +495,7 @@ public class SampleController {
             for (int i = 0; i < buffer1.length; i++) {
                 strbuf = strbuf+(char)buffer1[i];
             }
-            strbuf.replaceAll("\\s","");
+            strbuf = strbuf.replaceAll("\\s","");
             strresult = strresult+strbuf;
 
             //считываем длину пакета
@@ -525,6 +543,18 @@ public class SampleController {
     }
 
     public void copyDataAction(ActionEvent actionEvent) {
+        float value;
+        value = Float.parseFloat(desctopDataValue.getText());
+        stopThread();
+        desktopData.setText(Integer.toHexString(Float.floatToIntBits(value)).toUpperCase());    //трансформация float значения в строку байт IEEE-754
+    }
+
+    public void regexChars(ActionEvent actionEvent){
+        TextField textField = (TextField)actionEvent.getSource();
+        String text = textField.getText();
+        System.out.println(actionEvent.getSource().toString());
+        text = text.replaceAll("[a-zA-Z]", "");
+        textField.setText(text);
 
     }
 
