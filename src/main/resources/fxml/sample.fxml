@@ -351,9 +351,22 @@
                                     </Button>
                                     <CheckBox fx:id="autoSendFrameButton" mnemonicParsing="false" onAction="#autoSendFrameAction" text="Автоотправка кадров">
                                        <VBox.margin>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="25.0" />
+                                          <Insets bottom="5.0" left="5.0" right="5.0" />
                                        </VBox.margin>
                                     </CheckBox>
+                                    <HBox prefHeight="100.0" prefWidth="200.0">
+                                       <children>
+                                          <Label text="Таймаут отправки">
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                          <TextField fx:id="timeOut" alignment="CENTER" onKeyPressed="#timeOutAction" prefHeight="25.0" prefWidth="50.0" promptText="50" text="50" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                    </HBox>
                                  </children>
                               </VBox>
                            </children>

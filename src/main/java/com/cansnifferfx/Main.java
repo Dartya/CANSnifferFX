@@ -42,7 +42,7 @@ public class Main extends Application {
         currentRoot = loadFXML(); //возвращает сконфигурированный Node (Parent)
         Scene scene = new Scene(currentRoot, 760, 700);
         primaryStage.setScene(scene);
-        primaryStage.setMinHeight(700);
+        primaryStage.setMinHeight(750);
         primaryStage.setMinWidth(760);
         primaryStage.getIcons().add(new Image("image/icon.png"));
         primaryStage.show();

@@ -13,12 +13,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jssc.*;
 
 import java.io.*;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -72,6 +74,7 @@ public class SampleController {
     public Button saveDictionaryButton;
     public CheckBox autoSendFrameButton;
     public CheckMenuItem autoScrollMenuItem;
+    public TextField timeOut;
 
     //ArrayLists
     private ArrayList<Integer> baudRates = new ArrayList<Integer>();
@@ -102,6 +105,8 @@ public class SampleController {
 
     //потоки
     AutoSendFrameThread autoSendFrameThread;
+
+    static int itimeOut = 50;
 
     public void initialize() {
 
@@ -223,6 +228,19 @@ public class SampleController {
         stopbitCB.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 updatePortParams();
+            }
+        });
+
+        //слушатели листов сообщений
+        consoleListView.selectionModelProperty().addListener(new ChangeListener() {
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                consoleListView.scrollTo(consoleMessages.size());
+            }
+        });
+
+        sendedPacketsList.selectionModelProperty().addListener(new ChangeListener() {
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                sendedPacketsList.scrollTo(consoleMessages.size());
             }
         });
 
@@ -473,7 +491,7 @@ public class SampleController {
             for (int i = 0; i < buffer2.length; i++) {
                 strbuf = strbuf+(char)buffer2[i];
             }
-            strbuf.replaceAll("\\s","");
+            strbuf = strbuf.replaceAll("\\s","");
             strresult = strresult+strbuf;
 
             generatedTextTextField.setText(strresult);
@@ -512,10 +530,13 @@ public class SampleController {
 
     public void saveInDictionaryAction(ActionEvent actionEvent) {
         dictionaryObservList.add(outcomingPacket.getText());
+        autoSendFrameThread.setList(dictionaryObservList);
     }
 
     public void saveInDictionaryAction2(ActionEvent actionEvent) {
         dictionaryObservList.add(incomingPacket.getText());
+        autoSendFrameThread.setList(dictionaryObservList);
+
     }
 
     public void loadDictionaryAction(ActionEvent actionEvent) {
@@ -591,7 +612,7 @@ public class SampleController {
     public void autoSendFrameAction(ActionEvent actionEvent) {
         System.out.println("autosending is " + autoSendFrameButton.isSelected());
 
-        if (autoSendFrameButton.isSelected() == true) {
+        if (autoSendFrameButton.isSelected() == true && !(dictionaryObservList.get(0) == null)) {
             autoSendFrameThread.setList(dictionaryObservList);
             autoSendFrameThread.setSendOn(true);
         }else
@@ -604,39 +625,31 @@ public class SampleController {
 
     public void deleteSelected(ActionEvent actionEvent) {
         dictionaryObservList.remove(dictionaryObservList.get(dictionaryList.getSelectionModel().getSelectedIndex()));
+        autoSendFrameThread.setList(dictionaryObservList);
     }
 
     public void autoscrollAction(ActionEvent actionEvent) {
         if (autoScrollMenuItem.isSelected()) {
-            //слушатели листов сообщений
             consoleListView.scrollTo(consoleMessages.size());
-            consoleListView.selectionModelProperty().addListener(new ChangeListener() {
-                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                    consoleListView.scrollTo(consoleMessages.size());
-                }
-            });
             sendedPacketsList.scrollTo(outgoingMessages.size());
-            sendedPacketsList.selectionModelProperty().addListener(new ChangeListener() {
-                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                    sendedPacketsList.scrollTo(outgoingMessages.size());
-                }
-            });
-        } else {
 
+        } else if (!autoScrollMenuItem.isSelected()){
+            consoleListView.scrollTo(consoleMessages.size()-10);
+            sendedPacketsList.scrollTo(outgoingMessages.size()-10);
         }
+    }
 
-        /*
-        consoleListView.getItems().addListener(new ListChangeListener() {
-            public void onChanged(Change c) {
-                consoleListView.scrollTo(consoleMessages.size());
-            }
-        });
-
-        sendedPacketsList.getItems().addListener(new ListChangeListener() {
-            public void onChanged(Change c) {
-                sendedPacketsList.scrollTo(outgoingMessages.size());
-            }
-        });*/
+    public void timeOutAction(KeyEvent keyEvent) {
+        String text = timeOut.getText();
+        itimeOut = Integer.parseInt(text.replaceAll("[\\D]", ""));
+        if (itimeOut < 50) {
+            itimeOut = 50;
+            //timeOut.setText(""+itimeOut);
+        } else if (itimeOut >1000){
+            itimeOut = 1000;
+            //timeOut.setText(""+itimeOut);
+        }
+        autoSendFrameThread.setTimeOut(itimeOut);
     }
 
     private class PortReader implements SerialPortEventListener {

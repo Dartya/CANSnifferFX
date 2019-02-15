@@ -23,6 +23,7 @@ public class AutoSendFrameThread extends Thread {
     private boolean sendOn = false;
     private boolean flag = true;
     private long cicle = 0;
+    private int timeout = 50;
 
     public boolean isSendOn() {
         return sendOn;
@@ -42,6 +43,10 @@ public class AutoSendFrameThread extends Thread {
         listSize = list.size();
     }
 
+    public void setTimeOut(int timeout){
+        this.timeout = timeout;
+    }
+
     @Override
     public void run() {
         while (flag) {
@@ -49,15 +54,17 @@ public class AutoSendFrameThread extends Thread {
             if (sendOn) {
                 //послать в порт
                 System.out.println("sending frame №" + index + "...");
-                Messages.sendMessage(controller, list.get(index), serialPort);
-                try{
-                    Thread.sleep(100 );		//Приостановка потока на 1 сек.
-                }catch(InterruptedException e){
-                    System.out.println(e.toString());
+                if (listSize > 0) {
+                    try {
+                        Messages.sendMessage(controller, list.get(index), serialPort);
+                        Thread.sleep(timeout);        //Приостановка потока на 1 сек.
+                    } catch (InterruptedException e) {
+                        System.out.println(e.toString());
+                    }
+                    index++;
+                    if (index == listSize)
+                        index = 0;
                 }
-                index++;
-                if (index == listSize)
-                    index = 0;
             }
             cicle++;
         }
