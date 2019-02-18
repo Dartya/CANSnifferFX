@@ -413,6 +413,7 @@ public class SampleController {
                 strbuf = strbuf + (buffer[i]) + " ";
             }
             deviceData.setText(strbuf);
+            readData(message);
 
             //обновляем обсервабллист
             incomingMessages.add(incomingString);
@@ -422,6 +423,49 @@ public class SampleController {
             //автоматическая прокрутка до последнего сообщения
             savedIncomingString = incomingString;
         }
+    }
+
+    private void readData(String message){
+        message.replaceAll("[\\D]", "");
+        byte buff[] = message.getBytes();
+        String strbuf = "";
+
+        for (int i = 5; i < 7; i++) {
+            strbuf = strbuf + (buff[i]) + "";
+        }
+        deviceDataComand.setText(""+(Integer.parseInt(strbuf, 16)));
+        strbuf = "";
+
+        for (int i = 7; i < 9; i++) {
+            strbuf = strbuf + (buff[i]) + "";
+        }
+        deviceDataIndex.setText(""+(Integer.parseInt(strbuf, 16)));
+        strbuf = "";
+
+        for (int i = 9; i < 13; i++) {
+            strbuf = strbuf + (buff[i]) + "";
+        }
+        deviceDataSubIndex.setText(""+(Integer.parseInt(strbuf, 32)));
+        strbuf = "";
+
+        for (int i = 13; i < 21; i++) {
+            strbuf = strbuf + (buff[i]) + "";
+        }
+        deviceDataIndex.setText(""+(Float.parseFloat(strbuf)));
+        strbuf = "";
+
+        /*
+        public class Test {
+            public static void main (String[] args) {
+
+                String myString = "BF800000";
+                Long i = Long.parseLong(myString, 16);
+                Float f = Float.intBitsToFloat(i.intValue());
+                System.out.println(f);
+                System.out.println(Integer.toHexString(Float.floatToIntBits(f)));
+                }
+        }
+        */
     }
 /*
     public void printStringHexCodes(String message){
@@ -543,10 +587,28 @@ public class SampleController {
     }
 
     public void copyDataAction(ActionEvent actionEvent) {
+
+        stopThread(); // ДЛЯ ОТЛАДКИ - ПОТОМ УДАЛИТЬ!
+
+        String data;
+        //команда
+        int comand = Integer.parseInt(desctopDataComand.getText());
+        data = Integer.toHexString(comand).toUpperCase();
+
+        //index
+        int index = Integer.parseInt(desctopDataIndex.getText());
+        data = data + Integer.toHexString(index).toUpperCase();
+
+        //subIndex
+        int subIndex = Integer.parseInt(desctopDataSubIndex.getText());
+        data = data + Integer.toHexString(subIndex);
+
+        //значение параметра
         float value;
         value = Float.parseFloat(desctopDataValue.getText());
-        stopThread();
-        desktopData.setText(Integer.toHexString(Float.floatToIntBits(value)).toUpperCase());    //трансформация float значения в строку байт IEEE-754
+        data = data + Integer.toHexString(Float.floatToIntBits(value)).toUpperCase();
+        desktopData.setText(data);    //трансформация float значения в строку байт IEEE-754
+
     }
 
     public void regexChars(ActionEvent actionEvent){
