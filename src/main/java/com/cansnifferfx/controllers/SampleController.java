@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -20,14 +19,9 @@ import javafx.stage.Stage;
 import jssc.*;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SampleController {
     //FXML Views
@@ -237,13 +231,15 @@ public class SampleController {
         //слушатели листов сообщений
         consoleListView.selectionModelProperty().addListener(new ChangeListener() {
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                consoleListView.scrollTo(consoleMessages.size());
+                if (autoScrollMenuItem.isSelected())
+                    consoleListView.scrollTo(consoleMessages.size());
             }
         });
 
         sendedPacketsList.selectionModelProperty().addListener(new ChangeListener() {
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                sendedPacketsList.scrollTo(consoleMessages.size());
+                if (autoScrollMenuItem.isSelected())
+                    sendedPacketsList.scrollTo(outgoingMessages.size());
             }
         });
 
@@ -388,7 +384,8 @@ public class SampleController {
 
         //автоматическая прокрутка до последнего сообщения
         outgoingMessages.add(message);
-        sendedPacketsList.scrollTo(outgoingMessages.size());
+        if (autoScrollMenuItem.isSelected())
+            sendedPacketsList.scrollTo(outgoingMessages.size());
     }
 
     public void getMessage(String message){
@@ -413,11 +410,13 @@ public class SampleController {
                 strbuf = strbuf + (buffer[i]) + " ";
             }
             deviceData.setText(strbuf);
+            //stopThread(); // ДЛЯ ОТЛАДКИ - ПОТОМ УДАЛИТЬ!
             readData(message);
 
             //обновляем обсервабллист
             incomingMessages.add(incomingString);
-            recievedPacketsList.scrollTo(incomingMessages.size());
+            if (autoScrollMenuItem.isSelected())
+                recievedPacketsList.scrollTo(incomingMessages.size());
 
             callsOfGetMessageMethod++;
             //автоматическая прокрутка до последнего сообщения
@@ -431,60 +430,47 @@ public class SampleController {
         String strbuf = "";
 
         for (int i = 5; i < 7; i++) {
-            strbuf = strbuf + (buff[i]) + "";
+            strbuf = strbuf + (char)buff[i];
         }
-        deviceDataComand.setText(""+(Integer.parseInt(strbuf, 16)));
+        //deviceDataComand.setText(""+(Integer.parseInt(strbuf, 16)));
+        deviceDataComand.setText(strbuf);
         strbuf = "";
 
         for (int i = 7; i < 9; i++) {
-            strbuf = strbuf + (buff[i]) + "";
+            strbuf = strbuf + (char)(buff[i]);
         }
-        deviceDataIndex.setText(""+(Integer.parseInt(strbuf, 16)));
+        //deviceDataIndex.setText(""+(Integer.parseInt(strbuf, 16)));
+        deviceDataIndex.setText(strbuf);
+        String s = strbuf;
+        System.out.println(s);
         strbuf = "";
 
         for (int i = 9; i < 13; i++) {
-            strbuf = strbuf + (buff[i]) + "";
+            strbuf = strbuf + (char)(buff[i]);
         }
-        deviceDataSubIndex.setText(""+(Integer.parseInt(strbuf, 32)));
+        //deviceDataSubIndex.setText(""+(Integer.parseInt(strbuf, 32)));
+        deviceDataSubIndex.setText(strbuf);
         strbuf = "";
 
+        //Данные - парсим флоат только для ряда параметров, смотрим по индексу
         for (int i = 13; i < 21; i++) {
-            strbuf = strbuf + (buff[i]) + "";
+            strbuf = strbuf + (char) (buff[i]);
         }
-        deviceDataIndex.setText(""+(Float.parseFloat(strbuf)));
-        strbuf = "";
-
-        /*
-        public class Test {
-            public static void main (String[] args) {
-
-                String myString = "BF800000";
-                Long i = Long.parseLong(myString, 16);
-                Float f = Float.intBitsToFloat(i.intValue());
-                System.out.println(f);
-                System.out.println(Integer.toHexString(Float.floatToIntBits(f)));
-                }
-        }
-        */
+        if (s.equals("02") || s.equals("04") || s.equals("05") || s.equals("06") || s.equals("07") || s.equals("15") || s.equals("16"))
+            deviceDataValue.setText(parseHex(strbuf) + "");
+        else
+            deviceDataValue.setText(strbuf);
     }
-/*
-    public void printStringHexCodes(String message){
-        byte[] buffer = message.getBytes();
-        System.out.print("Массив байт: ");
-        String mes = "Массив байт: ";
-        for (int i = 0; i < buffer.length; i++) {
-            if (i == buffer.length-1) {
-                System.out.println(buffer[i]);
-                mes = mes+buffer[i];
-            }
-            else {
-                System.out.print(buffer[i] + " ");
-                mes = mes+buffer[i];
-            }
-        }
-        printInConsole(mes);
+
+    private float parseHex(String myString){
+
+        Long i = Long.parseLong(myString, 16);
+        Float f = Float.intBitsToFloat(i.intValue());
+        //System.out.println(f);
+        //System.out.println(Integer.toHexString(Float.floatToIntBits(f)));
+
+        return f;
     }
-*/
     public void exitAction(ActionEvent actionEvent) {
         try {
             closePorts();
@@ -588,27 +574,55 @@ public class SampleController {
 
     public void copyDataAction(ActionEvent actionEvent) {
 
-        stopThread(); // ДЛЯ ОТЛАДКИ - ПОТОМ УДАЛИТЬ!
+        //stopThread(); // ДЛЯ ОТЛАДКИ - ПОТОМ УДАЛИТЬ!
 
         String data;
+        String buf = "";
         //команда
-        int comand = Integer.parseInt(desctopDataComand.getText());
-        data = Integer.toHexString(comand).toUpperCase();
+        //int comand = Integer.parseInt(desctopDataComand.getText());
+        //buf = Integer.toHexString(comand).toUpperCase()+"";
+        buf = desctopDataComand.getText();
+        if (buf.length() > 1)
+            data = buf;
+        else
+            data = "0"+buf;
 
         //index
-        int index = Integer.parseInt(desctopDataIndex.getText());
-        data = data + Integer.toHexString(index).toUpperCase();
+        String s;
+        //int index = Integer.parseInt(desctopDataIndex.getText());
+        //buf = Integer.toHexString(index).toUpperCase();
+        buf = desctopDataIndex.getText();
+        if (buf.length() > 1) {
+            data = data + buf;
+            s = buf;
+        }
+        else {
+            data = data + "0" + buf;
+            s = "0"+buf;
+        }
 
         //subIndex
-        int subIndex = Integer.parseInt(desctopDataSubIndex.getText());
-        data = data + Integer.toHexString(subIndex);
+        //long subIndex = Long.parseLong(desctopDataSubIndex.getText());
+        //buf = Long.toHexString(subIndex).toUpperCase();
+        buf = desctopDataSubIndex.getText();
+        if (buf.length() == 4)
+            data = data+buf;
+        else if (buf.length() == 1)
+            data = data+"000"+buf;
+        else if (buf.length() == 2)
+            data = data+"00"+buf;
+        else if (buf.length() == 3)
+            data = data+"0"+buf;
 
         //значение параметра
         float value;
-        value = Float.parseFloat(desctopDataValue.getText());
-        data = data + Integer.toHexString(Float.floatToIntBits(value)).toUpperCase();
-        desktopData.setText(data);    //трансформация float значения в строку байт IEEE-754
-
+        if (s.equals("02") || s.equals("04") || s.equals("05") || s.equals("06") || s.equals("07") || s.equals("15") || s.equals("16")) {
+            value = Float.parseFloat(desctopDataValue.getText());
+            data = data + Integer.toHexString(Float.floatToIntBits(value)).toUpperCase(); //трансформация float значения в строку байт IEEE-754
+        } else{
+            data = data + desctopDataValue.getText();
+        }
+        desktopData.setText(data);
     }
 
     public void regexChars(ActionEvent actionEvent){
@@ -724,10 +738,12 @@ public class SampleController {
         if (autoScrollMenuItem.isSelected()) {
             consoleListView.scrollTo(consoleMessages.size());
             sendedPacketsList.scrollTo(outgoingMessages.size());
+            recievedPacketsList.scrollTo(incomingMessages.size());
 
         } else if (!autoScrollMenuItem.isSelected()){
             consoleListView.scrollTo(consoleMessages.size()-10);
             sendedPacketsList.scrollTo(outgoingMessages.size()-10);
+            recievedPacketsList.scrollTo(incomingMessages.size()-10);
         }
     }
 
@@ -742,6 +758,32 @@ public class SampleController {
             //timeOut.setText(""+itimeOut);
         }
         autoSendFrameThread.setTimeOut(itimeOut);
+    }
+
+    public void readDataCMAction(ActionEvent actionEvent) {
+        String s;
+        s = incomingMessages.get(recievedPacketsList.getSelectionModel().getSelectedIndex());
+        readData(s);
+    }
+
+    public void readDataCMAction1(ActionEvent actionEvent) {
+        String s;
+        s = outgoingMessages.get(sendedPacketsList.getSelectionModel().getSelectedIndex());
+        readData(s);
+    }
+
+    public void saveInDictionaryAction3(ActionEvent actionEvent) {
+        String s;
+        s = outgoingMessages.get(sendedPacketsList.getSelectionModel().getSelectedIndex());
+        dictionaryObservList.add(s);
+        autoSendFrameThread.setList(dictionaryObservList);
+    }
+
+    public void saveInDictionaryAction4(ActionEvent actionEvent) {
+        String s;
+        s = incomingMessages.get(recievedPacketsList.getSelectionModel().getSelectedIndex());
+        dictionaryObservList.add(s);
+        autoSendFrameThread.setList(dictionaryObservList);
     }
 
     private class PortReader implements SerialPortEventListener {
@@ -812,3 +854,23 @@ public class SampleController {
         }
     }
 }
+
+
+/*
+    public void printStringHexCodes(String message){
+        byte[] buffer = message.getBytes();
+        System.out.print("Массив байт: ");
+        String mes = "Массив байт: ";
+        for (int i = 0; i < buffer.length; i++) {
+            if (i == buffer.length-1) {
+                System.out.println(buffer[i]);
+                mes = mes+buffer[i];
+            }
+            else {
+                System.out.print(buffer[i] + " ");
+                mes = mes+buffer[i];
+            }
+        }
+        printInConsole(mes);
+    }
+*/
