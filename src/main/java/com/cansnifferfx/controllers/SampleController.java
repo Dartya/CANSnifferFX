@@ -750,8 +750,8 @@ public class SampleController {
     public void timeOutAction(KeyEvent keyEvent) {
         String text = timeOut.getText();
         itimeOut = Integer.parseInt(text.replaceAll("[\\D]", ""));
-        if (itimeOut < 50) {
-            itimeOut = 50;
+        if (itimeOut < 1) {
+            itimeOut = 1;
             //timeOut.setText(""+itimeOut);
         } else if (itimeOut >1000){
             itimeOut = 1000;

@@ -10,8 +10,8 @@
         <option name="nativeBundle" value="all" />
         <option name="title" value="CANSnifferFX" />
         <option name="vendor" value="A.Pitasov" />
-        <option name="version" value="0.1.0" />
-        <option name="width" value="760" />
+        <option name="version" value="0.2.0" />
+        <option name="width" value="840" />
       </options>
     </properties>
     <root id="root">
